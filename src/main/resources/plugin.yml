@@ -1,0 +1,14 @@
+name: DrakariaProfile
+main: fr.drakariaprofile.DrakariaProfile
+version: 1.0
+api-version: 1.8
+author: Tokzeen
+commands:
+  drakariaProfile:
+    description: Commande admin pour les profils
+    usage: /drakariaProfile ...
+permissions:
+  drakariaprofile.admin:
+    description: Accès admin à la commande drakariaProfile
+    default: op
+softdepend: [ShopGUIPlus]
