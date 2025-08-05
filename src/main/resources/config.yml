@@ -14,3 +14,17 @@ shop_sells:
   DIAMOND: 1.0    # 1 XP par diamant vendu
   IRON_INGOT: 0.2 # 0.2 XP par lingot vendu
   # etc.
+mobs:
+  ZOMBIE:
+    xp: 5
+    chance: 50  # pourcent (0-100)
+  SKELETON:
+    xp: 7
+    chance: 15
+  CREEPER:
+    xp: 10
+    chance: 5
+  ENDERMAN:
+    xp: 12
+    chance: 100
+

@@ -1,5 +1,6 @@
 package fr.drakariaprofile.profile;
 
+import fr.drakariaprofile.DrakariaProfile;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.storage.ProfileRepository;
 import fr.drakariaprofile.utils.XPLoopCounter;
@@ -17,12 +18,20 @@ public class ProfileManager {
     private final Map<String, Double> blockXpMap;
     private final Map<String, Double> smeltXpMap;
     private final Map<String, Double> shopSellXpMap;
+
+    // --- Pour le mapping mobs (mob system) ---
+    private final Map<String, DrakariaProfile.MobXpConfig> mobXpMap;
+
     private final int ACTION_BAR_DISPLAY_TICKS = 15; // 0.75s
 
-    public ProfileManager(Map<String, Double> blockXpMap, Map<String, Double> smeltXpMap, Map<String, Double> shopSellXpMap) {
+    public ProfileManager(Map<String, Double> blockXpMap,
+                          Map<String, Double> smeltXpMap,
+                          Map<String, Double> shopSellXpMap,
+                          Map<String, DrakariaProfile.MobXpConfig> mobXpMap) {
         this.blockXpMap = blockXpMap;
         this.smeltXpMap = smeltXpMap;
         this.shopSellXpMap = shopSellXpMap;
+        this.mobXpMap = mobXpMap;
     }
 
     public Profile getProfile(Player player) {
@@ -143,6 +152,11 @@ public class ProfileManager {
     }
     public double getXpForShopSell(String item) {
         return shopSellXpMap.getOrDefault(item, 0.0);
+    }
+
+    // ----------- MOB KILL XP -----------
+    public DrakariaProfile.MobXpConfig getMobXpConfig(String mob) {
+        return mobXpMap.get(mob.toUpperCase());
     }
 
     // ----------- Récompenses -----------
