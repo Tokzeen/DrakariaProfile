@@ -18,11 +18,14 @@ public class BlockBreakListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        ItemStack tool = player.getInventory().getItemInHand();
 
-        // Vérifie si l'outil utilisé a Silk Touch
+        // --- Blocage XP si frozen ---
+        if (profileManager.isFrozen(player)) {
+            return;
+        }
+
+        ItemStack tool = player.getInventory().getItemInHand();
         if (tool != null && tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
-            // Si Silk Touch est présent, on ne donne pas d'XP
             return;
         }
 

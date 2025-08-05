@@ -22,12 +22,18 @@ public class ShopTransactionListener implements Listener {
     public void onShopPreTransaction(ShopPreTransactionEvent event) {
         ShopManager.ShopAction action = event.getShopAction();
 
-        // Autoriser toutes formes de vente (« sell » dans l'action)
+        // Vente seulement
         if (action == null || !action.name().toLowerCase().contains("sell")) {
             return;
         }
 
         Player player = event.getPlayer();
+
+        // --- Blocage XP si frozen ---
+        if (profileManager.isFrozen(player)) {
+            return;
+        }
+
         ShopItem shopItem = event.getShopItem();
         if (player == null || shopItem == null) return;
 
