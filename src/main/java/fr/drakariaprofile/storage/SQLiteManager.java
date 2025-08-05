@@ -11,6 +11,7 @@ public class SQLiteManager {
         try {
             Class.forName("org.sqlite.JDBC");
             File dbFile = new File(DrakariaProfile.getInstance().getDataFolder(), "profiles.db");
+            dbFile.getParentFile().mkdirs();
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile.getAbsolutePath());
 
             Statement st = connection.createStatement();
@@ -18,10 +19,23 @@ public class SQLiteManager {
                     "uuid TEXT PRIMARY KEY," +
                     "name TEXT," +
                     "xp REAL," +
-                    "level INT," +   // <-- tu n'utilises pas level dans Profile, vérifie/refactore au besoin
+                    "level INT," +
                     "frozen BOOLEAN" +
                     ");");
             st.close();
+
+            // ----- Ajoute ce BLOC juste après la création de la table -----
+            Statement alter = null;
+            try {
+                alter = connection.createStatement();
+                alter.executeUpdate("ALTER TABLE profiles ADD COLUMN claimed_rewards TEXT;");
+            } catch (SQLException ignored) {
+                // Ignore l'erreur si la colonne existe déjà
+            } finally {
+                if (alter != null) try { alter.close(); } catch (SQLException ignore) {}
+            }
+            // -------------------------------------------------------------
+
         } catch (ClassNotFoundException e) {
             System.err.println("Le driver JDBC SQLite n'est pas présent dans le plugin !");
             e.printStackTrace();
@@ -29,6 +43,8 @@ public class SQLiteManager {
             e.printStackTrace();
         }
     }
+
+
 
     public static Connection getConnection() { return connection; }
 

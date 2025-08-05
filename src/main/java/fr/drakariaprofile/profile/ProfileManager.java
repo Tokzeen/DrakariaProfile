@@ -1,57 +1,82 @@
 package fr.drakariaprofile.profile;
 
-import fr.drakariaprofile.DrakariaProfile;
+import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.storage.ProfileRepository;
 import fr.drakariaprofile.utils.XPLoopCounter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ProfileManager {
     private final ProfileRepository repository = new ProfileRepository();
-
-    // Buffers action bar & timers
     private final Map<Player, Double> xpActionBarBuffer = new HashMap<>();
     private final Map<Player, XPLoopCounter> xpCounters = new HashMap<>();
 
-    // Sources XP
     private final Map<String, Double> blockXpMap;
     private final Map<String, Double> smeltXpMap;
     private final Map<String, Double> shopSellXpMap;
+    private final int ACTION_BAR_DISPLAY_TICKS = 15; // 0.75s
 
-    private final int ACTION_BAR_DISPLAY_TICKS = 15; // 15 ticks = 0.75s
-
-    // Ajoute shopSellXpMap au constructeur
     public ProfileManager(Map<String, Double> blockXpMap, Map<String, Double> smeltXpMap, Map<String, Double> shopSellXpMap) {
         this.blockXpMap = blockXpMap;
         this.smeltXpMap = smeltXpMap;
         this.shopSellXpMap = shopSellXpMap;
     }
 
-    // Chargement/sauvegarde profil SQL
     public Profile getProfile(Player player) {
         return repository.getOrCreateProfile(player.getUniqueId(), player.getName());
+    }
+
+    public void saveProfile(Profile profile) {
+        repository.saveProfile(profile);
+    }
+
+    public int getLevel(Player player) {
+        return getProfile(player).getLevel();
     }
 
     public double getXp(Player player) {
         return getProfile(player).getXp();
     }
 
-    // Ajout d’XP (toutes sources)
-    public void addXp(Player player, double amount) {
-        // 1. Sauvegarde en SQL
-        Profile profile = getProfile(player);
-        double newXp = Math.round((profile.getXp() + amount) * 100.0) / 100.0;
-        profile.setXp(newXp);
-        repository.saveProfile(profile);
+    public int getXpToNextLevel(Player player) {
+        int level = getLevel(player);
+        if (level >= getMaxConfiguredLevel()) return -1;
+        return ConfigManager.getXpForLevel(level);
+    }
 
-        // 2. Buffer & affichage immédiat
+    public void addXp(Player player, double amount) {
+        Profile profile = getProfile(player);
+        int currentLevel = profile.getLevel();
+        double xp = profile.getXp() + amount;
+
+        int lastDefinedLevel = getMaxConfiguredLevel();
+        boolean leveledUp = false;
+        while (true) {
+            int xpNeeded = ConfigManager.getXpForLevel(currentLevel);
+            if (currentLevel >= lastDefinedLevel) {
+                xp = Math.min(xp, xpNeeded);
+                break;
+            }
+            if (xp >= xpNeeded) {
+                xp -= xpNeeded;
+                currentLevel++;
+                leveledUp = true;
+            } else {
+                break;
+            }
+        }
+        profile.setLevel(currentLevel);
+        profile.setXp(xp);
+        repository.saveProfile(profile);
+        if (leveledUp) {
+            player.sendMessage("§6Bravo ! Tu es passé niveau §e" + currentLevel + "§6 !");
+        }
         double totalBuffer = xpActionBarBuffer.getOrDefault(player, 0.0) + amount;
         xpActionBarBuffer.put(player, totalBuffer);
         sendXpActionBar(player, totalBuffer);
-
-        // 3. Timer de purge automatique
         XPLoopCounter counter = xpCounters.computeIfAbsent(player, p ->
                 new XPLoopCounter(() -> {
                     xpActionBarBuffer.remove(p);
@@ -61,7 +86,6 @@ public class ProfileManager {
         counter.startOrReset();
     }
 
-    // Nettoyage ou refresh action bar
     private void refreshXpDisplay(Player player) {
         if (!xpActionBarBuffer.containsKey(player) || xpActionBarBuffer.get(player) <= 0) {
             sendActionBar(player, "");
@@ -74,7 +98,6 @@ public class ProfileManager {
         sendActionBar(player, total > 0 ? "§a+" + Math.round(total * 10.0) / 10.0 + " XP !" : "");
     }
 
-    // Affichage NMS Spigot 1.8.8
     public void sendActionBar(Player player, String message) {
         try {
             Object icbc = Class.forName("net.minecraft.server.v1_8_R3.IChatBaseComponent$ChatSerializer")
@@ -93,7 +116,6 @@ public class ProfileManager {
         }
     }
 
-    // Retrait d’XP et update affichage
     public void removeXp(Player player, double amount) {
         Profile profile = getProfile(player);
         profile.setXp(Math.max(0, Math.round((profile.getXp() - amount) * 100) / 100.0));
@@ -113,16 +135,55 @@ public class ProfileManager {
         return getProfile(player).isFrozen();
     }
 
-    // Mapping XP cassage
     public double getXpForBlock(String block) {
         return blockXpMap.getOrDefault(block, 0.0);
     }
-    // Mapping XP smelt
     public double getXpForSmelt(String item) {
         return smeltXpMap.getOrDefault(item, 0.0);
     }
-    // Mapping XP vente shop
     public double getXpForShopSell(String item) {
         return shopSellXpMap.getOrDefault(item, 0.0);
+    }
+
+    // ----------- Récompenses -----------
+
+    public boolean hasClaimedReward(Player player, int level) {
+        return getProfile(player).getClaimedRewards().contains(level);
+    }
+
+    public void addClaimedReward(Player player, int level) {
+        Profile profile = getProfile(player);
+        profile.getClaimedRewards().add(level);
+        saveProfile(profile);
+    }
+
+    // ----------- Level utils ----------
+
+    public int getMaxConfiguredLevel() {
+        Set<String> keys = ConfigManager.levelConfig.getConfigurationSection("levels").getKeys(false);
+        int max = 0;
+        for (String key : keys) {
+            try {
+                int n = Integer.parseInt(key);
+                if (n > max) max = n;
+            } catch (Exception ignored) {}
+        }
+        return max;
+    }
+
+    // Placeholders, affiche "MAX" si au dernier level
+    public String replacePlaceholders(Player player, String str) {
+        int level = getLevel(player);
+        int maxLevel = getMaxConfiguredLevel();
+        String maxXpStr;
+        if (level >= maxLevel) {
+            maxXpStr = "MAX";
+        } else {
+            maxXpStr = String.format("%.0f", (double)getXpToNextLevel(player));
+        }
+        return str
+                .replace("%player_level%", String.valueOf(level))
+                .replace("%player_xp%", String.format("%.2f", getXp(player)))
+                .replace("%player_max_xp%", maxXpStr);
     }
 }

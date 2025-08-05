@@ -1,5 +1,6 @@
 package fr.drakariaprofile;
 
+import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.listeners.ShopTransactionListener;
 import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.commands.ProfileCommandExecutor;
@@ -21,6 +22,17 @@ public class DrakariaProfile extends JavaPlugin {
     public void onEnable() {
         instance = this;
         SQLiteManager.connect();
+
+        // Crée config.yml et level.yml s'ils n'existent pas déjà (important)
+        if (!new File(getDataFolder(), "config.yml").exists()) {
+            saveResource("config.yml", false);
+        }
+        if (!new File(getDataFolder(), "level.yml").exists()) {
+            saveResource("level.yml", false);
+        }
+
+        // Charge les configs (configManager initialisera bien levelConfig)
+        ConfigManager.loadConfigs();
 
         Map<String, Double> blockXpMap = loadBlockXpMap();
         Map<String, Double> smeltXpMap = loadSmeltXpMap();
@@ -67,7 +79,6 @@ public class DrakariaProfile extends JavaPlugin {
         }
         return map;
     }
-
 
     private Map<String, Double> loadSmeltXpMap() {
         Map<String, Double> map = new HashMap<>();
