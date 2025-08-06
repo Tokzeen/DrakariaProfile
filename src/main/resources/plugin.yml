@@ -7,6 +7,9 @@ commands:
   drakariaProfile:
     description: Commande admin pour les profils
     usage: /drakariaProfile ...
+  profile:
+    description: Voir le profil d’un joueur sans permission
+    usage: /profile [joueur]
 permissions:
   drakariaprofile.admin:
     description: Accès admin à la commande drakariaProfile

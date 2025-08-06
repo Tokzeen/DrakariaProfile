@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class ProfileManager {
     private final ProfileRepository repository = new ProfileRepository();
@@ -18,10 +19,7 @@ public class ProfileManager {
     private final Map<String, Double> blockXpMap;
     private final Map<String, Double> smeltXpMap;
     private final Map<String, Double> shopSellXpMap;
-
-    // --- Pour le mapping mobs (mob system) ---
     private final Map<String, DrakariaProfile.MobXpConfig> mobXpMap;
-
     private final int ACTION_BAR_DISPLAY_TICKS = 15; // 0.75s
 
     public ProfileManager(Map<String, Double> blockXpMap,
@@ -38,17 +36,17 @@ public class ProfileManager {
         return repository.getOrCreateProfile(player.getUniqueId(), player.getName());
     }
 
+    // -------- FIX: support offline players via UUID&name
+    public Profile getProfile(UUID uuid, String name) {
+        return repository.getOrCreateProfile(uuid, name);
+    }
+
     public void saveProfile(Profile profile) {
         repository.saveProfile(profile);
     }
 
-    public int getLevel(Player player) {
-        return getProfile(player).getLevel();
-    }
-
-    public double getXp(Player player) {
-        return getProfile(player).getXp();
-    }
+    public int getLevel(Player player) { return getProfile(player).getLevel(); }
+    public double getXp(Player player) { return getProfile(player).getXp(); }
 
     public int getXpToNextLevel(Player player) {
         int level = getLevel(player);
@@ -160,7 +158,6 @@ public class ProfileManager {
     }
 
     // ----------- Récompenses -----------
-
     public boolean hasClaimedReward(Player player, int level) {
         return getProfile(player).getClaimedRewards().contains(level);
     }
@@ -172,7 +169,6 @@ public class ProfileManager {
     }
 
     // ----------- Level utils ----------
-
     public int getMaxConfiguredLevel() {
         Set<String> keys = ConfigManager.levelConfig.getConfigurationSection("levels").getKeys(false);
         int max = 0;
@@ -185,19 +181,24 @@ public class ProfileManager {
         return max;
     }
 
-    // Placeholders, affiche "MAX" si au dernier level
-    public String replacePlaceholders(Player player, String str) {
-        int level = getLevel(player);
+    // ----------- Placeholders pour PROFILE OFFLINE -----------
+    public String replacePlaceholders(Profile profile, String str) {
+        int level = profile.getLevel();
         int maxLevel = getMaxConfiguredLevel();
         String maxXpStr;
         if (level >= maxLevel) {
             maxXpStr = "MAX";
         } else {
-            maxXpStr = String.format("%.0f", (double)getXpToNextLevel(player));
+            maxXpStr = String.format("%.0f", (double)ConfigManager.getXpForLevel(level));
         }
         return str
                 .replace("%player_level%", String.valueOf(level))
-                .replace("%player_xp%", String.format("%.2f", getXp(player)))
+                .replace("%player_xp%", String.format("%.2f", profile.getXp()))
                 .replace("%player_max_xp%", maxXpStr);
+    }
+
+    // (Tu gardes aussi l'existante pour Player online si tu veux)
+    public String replacePlaceholders(Player player, String str) {
+        return replacePlaceholders(getProfile(player), str);
     }
 }

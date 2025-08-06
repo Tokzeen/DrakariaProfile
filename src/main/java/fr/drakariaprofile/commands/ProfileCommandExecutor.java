@@ -6,6 +6,7 @@ import fr.drakariaprofile.config.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 public class ProfileCommandExecutor implements CommandExecutor {
     private final ProfileManager profileManager;
@@ -17,7 +18,7 @@ public class ProfileCommandExecutor implements CommandExecutor {
             sender.sendMessage("§cPermission refusée.");
             return true;
         }
-        // Aucune arg : affiche son propre profil (avec placeholders)
+        // /drakariaProfile (info de soi)
         if (args.length == 0) {
             if (sender instanceof Player) {
                 String msg = "§bVotre niveau: §e%player_level% §7| §aXP: §b%player_xp%§7/§c%player_max_xp%";
@@ -28,7 +29,7 @@ public class ProfileCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        // /drakariaProfile give <joueur> <xp>
+        // /drakariaProfile give/remove/freeze/unfreeze restent réservés online uniquement
         if ("give".equalsIgnoreCase(args[0]) && args.length == 3) {
             Player cible = Bukkit.getPlayerExact(args[1]);
             double add;
@@ -40,7 +41,6 @@ public class ProfileCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        // /drakariaProfile remove <joueur> <xp>
         if ("remove".equalsIgnoreCase(args[0]) && args.length == 3) {
             Player cible = Bukkit.getPlayerExact(args[1]);
             double rm;
@@ -52,7 +52,6 @@ public class ProfileCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        // /drakariaProfile freeze <joueur>
         if ("freeze".equalsIgnoreCase(args[0]) && args.length == 2) {
             Player cible = Bukkit.getPlayerExact(args[1]);
             if (cible == null) { sender.sendMessage("§cJoueur introuvable."); return true; }
@@ -62,7 +61,6 @@ public class ProfileCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        // /drakariaProfile unfreeze <joueur>
         if ("unfreeze".equalsIgnoreCase(args[0]) && args.length == 2) {
             Player cible = Bukkit.getPlayerExact(args[1]);
             if (cible == null) { sender.sendMessage("§cJoueur introuvable."); return true; }
@@ -72,13 +70,13 @@ public class ProfileCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        // /drakariaProfile rewards <joueur> <level>
+        // /drakariaProfile rewards <joueur> <level> : supporte offline
         if ("rewards".equalsIgnoreCase(args[0]) && args.length == 3) {
-            Player cible = Bukkit.getPlayerExact(args[1]);
+            OfflinePlayer cible = Bukkit.getOfflinePlayer(args[1]);
             int level;
             try { level = Integer.parseInt(args[2]); } catch (Exception ex) { sender.sendMessage("§cLevel invalide."); return true; }
-            if (cible == null) { sender.sendMessage("§cJoueur introuvable."); return true; }
-            Profile profile = profileManager.getProfile(cible);
+            if (cible == null || cible.getUniqueId() == null || cible.getName() == null) { sender.sendMessage("§cJoueur introuvable."); return true; }
+            Profile profile = profileManager.getProfile(cible.getUniqueId(), cible.getName());
 
             if (profile.getClaimedRewards().contains(level)) {
                 sender.sendMessage("§cLa récompense du niveau " + level + " a déjà été récupérée !");
@@ -95,19 +93,29 @@ public class ProfileCommandExecutor implements CommandExecutor {
             }
             rewardCmd = rewardCmd.replace("%player%", cible.getName());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), rewardCmd);
-            profileManager.addClaimedReward(cible, level);
+            profileManager.addClaimedReward((Player) profile, level);
 
             sender.sendMessage("§aRécompense du niveau " + level + " donnée à " + cible.getName() + " !");
-            cible.sendMessage("§6Tu as récupéré la récompense du niveau " + level + " !");
+            if (cible.isOnline() && cible.getPlayer() != null) {
+                cible.getPlayer().sendMessage("§6Tu as récupéré la récompense du niveau " + level + " !");
+            }
             return true;
         }
 
-        // /drakariaProfile <joueur>
+        // /drakariaProfile <joueur> : supporte offline
         if (args.length == 1) {
-            Player cible = Bukkit.getPlayerExact(args[0]);
-            if (cible == null) { sender.sendMessage("§cJoueur introuvable."); return true; }
+            OfflinePlayer cible = Bukkit.getOfflinePlayer(args[0]);
+            if (cible == null || cible.getUniqueId() == null || cible.getName() == null) {
+                sender.sendMessage("§cJoueur introuvable.");
+                return true;
+            }
+            Profile profile = profileManager.getProfile(cible.getUniqueId(), cible.getName());
+            if (profile == null) {
+                sender.sendMessage("§cAucun profil trouvé pour ce joueur.");
+                return true;
+            }
             String msg = "§b" + cible.getName() + " §7| §eNiveau: %player_level% §7| §aXP: §b%player_xp%§7/§c%player_max_xp%";
-            sender.sendMessage(profileManager.replacePlaceholders(cible, msg));
+            sender.sendMessage(profileManager.replacePlaceholders(profile, msg));
             return true;
         }
 

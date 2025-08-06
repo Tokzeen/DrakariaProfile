@@ -1,5 +1,6 @@
 package fr.drakariaprofile;
 
+import fr.drakariaprofile.commands.ProfilePublicCommandExecutor;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.listeners.ShopTransactionListener;
 import fr.drakariaprofile.profile.ProfileManager;
@@ -55,6 +56,8 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopTransactionListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new MobKillListener(profileManager), this);
         getCommand("drakariaProfile").setExecutor(new ProfileCommandExecutor(profileManager));
+        getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
+
     }
 
     @Override
