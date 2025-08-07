@@ -84,6 +84,7 @@ public class DrakariaProfile extends JavaPlugin {
 
         // Menu des récompenses
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
+        getCommand("reward").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("rewards").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("récompenses").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("recompence").setExecutor(new RewardsCommandExecutor(menuManager));
