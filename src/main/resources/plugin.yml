@@ -10,6 +10,14 @@ commands:
   profile:
     description: Voir le profil d’un joueur sans permission
     usage: /profile [joueur]
+  rewards:
+    description: Ouvre le menu des récompenses
+  récompenses:
+    aliases: [ rewards ]
+    description: Alias
+  recompence:
+    aliases: [ rewards ]
+    description: Alias
 permissions:
   drakariaprofile.admin:
     description: Accès admin à la commande drakariaProfile

@@ -1,0 +1,241 @@
+rewards:
+  '1':
+    name: '&bRécompense #1'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '2':
+    name: '&bRécompense #2'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '3':
+    name: '&bRécompense #3'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '4':
+    name: '&bRécompense #4'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '5':
+    name: '&bRécompense #5'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '6':
+    name: '&bRécompense #6'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '7':
+    name: '&bRécompense #7'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '8':
+    name: '&bRécompense #8'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '9':
+    name: '&bRécompense #9'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '10':
+    name: '&bRécompense #10'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '11':
+    name: '&bRécompense #11'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '12':
+    name: '&bRécompense #12'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '13':
+    name: '&bRécompense #13'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '14':
+    name: '&bRécompense #14'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '15':
+    name: '&bRécompense #15'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '16':
+    name: '&bRécompense #16'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '17':
+    name: '&bRécompense #17'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '18':
+    name: '&bRécompense #18'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '19':
+    name: '&bRécompense #19'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '20':
+    name: '&bRécompense #20'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '21':
+    name: '&bRécompense #21'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '22':
+    name: '&bRécompense #22'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '23':
+    name: '&bRécompense #23'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '24':
+    name: '&bRécompense #24'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '25':
+    name: '&bRécompense #25'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '26':
+    name: '&bRécompense #26'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '27':
+    name: '&bRécompense #27'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '28':
+    name: '&bRécompense #28'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '29':
+    name: '&bRécompense #29'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '30':
+    name: '&bRécompense #30'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '31':
+    name: '&bRécompense #31'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '32':
+    name: '&bRécompense #32'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '33':
+    name: '&bRécompense #33'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '34':
+    name: '&bRécompense #34'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '35':
+    name: '&bRécompense #35'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '36':
+    name: '&bRécompense #36'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '37':
+    name: '&bRécompense #37'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '38':
+    name: '&bRécompense #38'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '39':
+    name: '&bRécompense #39'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '40':
+    name: '&bRécompense #40'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '41':
+    name: '&bRécompense #41'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '42':
+    name: '&bRécompense #42'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '43':
+    name: '&bRécompense #43'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '44':
+    name: '&bRécompense #44'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '45':
+    name: '&bRécompense #45'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '46':
+    name: '&bRécompense #46'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '47':
+    name: '&bRécompense #47'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '48':
+    name: '&bRécompense #48'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '49':
+    name: '&bRécompense #49'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '50':
+    name: '&bRécompense #50'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '51':
+    name: '&bRécompense #51'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '52':
+    name: '&bRécompense #52'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '53':
+    name: '&bRécompense #53'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '54':
+    name: '&bRécompense #54'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '55':
+    name: '&bRécompense #55'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '56':
+    name: '&bRécompense #56'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '57':
+    name: '&bRécompense #57'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '58':
+    name: '&bRécompense #58'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '59':
+    name: '&bRécompense #59'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '60':
+    name: '&bRécompense #60'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '61':
+    name: '&bRécompense #61'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '62':
+    name: '&bRécompense #62'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '63':
+    name: '&bRécompense #63'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '64':
+    name: '&bRécompense #64'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '65':
+    name: '&bRécompense #65'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '66':
+    name: '&bRécompense #66'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '67':
+    name: '&bRécompense #67'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '68':
+    name: '&bRécompense #68'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '69':
+    name: '&bRécompense #69'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '70':
+    name: '&bRécompense #70'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '71':
+    name: '&bRécompense #71'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '72':
+    name: '&bRécompense #72'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '73':
+    name: '&bRécompense #73'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '74':
+    name: '&bRécompense #74'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '75':
+    name: '&bRécompense #75'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '76':
+    name: '&bRécompense #76'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '77':
+    name: '&bRécompense #77'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '78':
+    name: '&bRécompense #78'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '79':
+    name: '&bRécompense #79'
+    lore: ['&7Clique pour récupérer la récompense !']
+  '80':
+    name: '&bRécompense #80'
+    lore: ['&7Clique pour récupérer la récompense !']

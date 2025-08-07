@@ -83,11 +83,11 @@ levels:
 
 rewards:
   0: "give %player% diamond 1"
-  1: "give %player% diamond 1"
-  2: "give %player% diamond 1"
-  3: "give %player% diamond 1"
-  4: "give %player% diamond 1"
-  5: "give %player% diamond 1"
+  1: "give %player% diamond 2"
+  2: "give %player% diamond 3"
+  3: "give %player% diamond 4"
+  4: "give %player% diamond 5"
+  5: "give %player% diamond 6"
   6: "give %player% diamond 1"
   7: "give %player% diamond 1"
   8: "give %player% diamond 1"

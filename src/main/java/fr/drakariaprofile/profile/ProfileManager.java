@@ -162,11 +162,19 @@ public class ProfileManager {
         return getProfile(player).getClaimedRewards().contains(level);
     }
 
+    // Pour menu GUI (avec Profile déjà obtenu)
+    public void addClaimedReward(Profile profile, int level) {
+        profile.getClaimedRewards().add(level);
+        saveProfile(profile);
+    }
+
+    // Pour commande/usage API/player (optionnel)
     public void addClaimedReward(Player player, int level) {
         Profile profile = getProfile(player);
         profile.getClaimedRewards().add(level);
         saveProfile(profile);
     }
+
 
     // ----------- Level utils ----------
     public int getMaxConfiguredLevel() {

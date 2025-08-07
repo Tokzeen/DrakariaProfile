@@ -1,8 +1,11 @@
 package fr.drakariaprofile;
 
 import fr.drakariaprofile.commands.ProfilePublicCommandExecutor;
+import fr.drakariaprofile.commands.RewardsCommandExecutor;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.listeners.ShopTransactionListener;
+import fr.drakariaprofile.menu.MenuManager;
+import fr.drakariaprofile.menu.RewardsMenuListener;
 import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.commands.ProfileCommandExecutor;
 import fr.drakariaprofile.listeners.BlockBreakListener;
@@ -13,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +47,24 @@ public class DrakariaProfile extends JavaPlugin {
             saveResource("level.yml", false);
         }
 
+        // --- Génère rewards_gui.yml automatiquement s'il n'existe pas ---
+        File rewardsGuiFile = new File(getDataFolder(), "rewards_gui.yml");
+        if (!rewardsGuiFile.exists()) {
+            try {
+                getDataFolder().mkdirs();
+                rewardsGuiFile.createNewFile();
+                YamlConfiguration config = new YamlConfiguration();
+                for (int i = 0; i < 80; i++) {
+                    config.set("rewards." + i + ".name", "&bRécompense #" + (i + 1));
+                    config.set("rewards." + i + ".lore", Collections.singletonList("&7Clique pour récupérer la récompense !"));
+                }
+                config.save(rewardsGuiFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // ----------------------------------------------------------------
+
         ConfigManager.loadConfigs();
 
         Map<String, Double> blockXpMap = loadBlockXpMap();
@@ -51,13 +73,21 @@ public class DrakariaProfile extends JavaPlugin {
         Map<String, MobXpConfig> mobXpMap = loadMobXpMap();
 
         profileManager = new ProfileManager(blockXpMap, smeltXpMap, shopSellXpMap, mobXpMap);
+
         getServer().getPluginManager().registerEvents(new BlockBreakListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new SmeltListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new ShopTransactionListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new MobKillListener(profileManager), this);
+
         getCommand("drakariaProfile").setExecutor(new ProfileCommandExecutor(profileManager));
         getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
 
+        // Menu des récompenses
+        MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
+        getCommand("rewards").setExecutor(new RewardsCommandExecutor(menuManager));
+        getCommand("récompenses").setExecutor(new RewardsCommandExecutor(menuManager));
+        getCommand("recompence").setExecutor(new RewardsCommandExecutor(menuManager));
+        getServer().getPluginManager().registerEvents(new RewardsMenuListener(menuManager, profileManager), this);
     }
 
     @Override
