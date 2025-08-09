@@ -4,20 +4,21 @@ version: 1.0
 api-version: 1.8
 author: Tokzeen
 commands:
-  drakariaProfile:
-    description: Commande admin pour les profils
-    usage: /drakariaProfile ...
   profile:
-    description: Voir le profil d’un joueur sans permission
-    usage: /profile [joueur]
+    description: Voir le profil d’un joueur (ou soi)
+  drakariaProfile:
+    description: Commandes admin du plugin
   rewards:
-    description: Ouvre le menu des récompenses
+    description: Ouvre le menu récompenses
+  reward:
+      aliases: [ rewards ]
+      description: Alias reward
   récompenses:
-    aliases: [ rewards ]
-    description: Alias
+    aliases: [rewards]
+    description: Alias récompenses
   recompence:
-    aliases: [ rewards ]
-    description: Alias
+    aliases: [rewards]
+    description: Alias récompenses/fr
 permissions:
   drakariaprofile.admin:
     description: Accès admin à la commande drakariaProfile

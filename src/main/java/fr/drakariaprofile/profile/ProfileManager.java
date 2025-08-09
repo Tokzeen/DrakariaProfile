@@ -36,7 +36,6 @@ public class ProfileManager {
         return repository.getOrCreateProfile(player.getUniqueId(), player.getName());
     }
 
-    // -------- FIX: support offline players via UUID&name
     public Profile getProfile(UUID uuid, String name) {
         return repository.getOrCreateProfile(uuid, name);
     }
@@ -145,11 +144,18 @@ public class ProfileManager {
     public double getXpForBlock(String block) {
         return blockXpMap.getOrDefault(block, 0.0);
     }
+
     public double getXpForSmelt(String item) {
         return smeltXpMap.getOrDefault(item, 0.0);
     }
+
     public double getXpForShopSell(String item) {
         return shopSellXpMap.getOrDefault(item, 0.0);
+    }
+
+    // ----------- NOUVEAU : ENCHANTEMENT XP -----------
+    public double getXpForEnchantLevel(int enchantLevel) {
+        return ConfigManager.getXpForEnchantLevel(enchantLevel);
     }
 
     // ----------- MOB KILL XP -----------
@@ -162,21 +168,22 @@ public class ProfileManager {
         return getProfile(player).getClaimedRewards().contains(level);
     }
 
-    // Pour menu GUI (avec Profile déjà obtenu)
+    public double getXpForAnvilLevel(int level) {
+        return ConfigManager.getXpForAnvilLevel(level);
+    }
+
+
     public void addClaimedReward(Profile profile, int level) {
         profile.getClaimedRewards().add(level);
         saveProfile(profile);
     }
 
-    // Pour commande/usage API/player (optionnel)
     public void addClaimedReward(Player player, int level) {
         Profile profile = getProfile(player);
         profile.getClaimedRewards().add(level);
         saveProfile(profile);
     }
 
-
-    // ----------- Level utils ----------
     public int getMaxConfiguredLevel() {
         Set<String> keys = ConfigManager.levelConfig.getConfigurationSection("levels").getKeys(false);
         int max = 0;
@@ -189,7 +196,6 @@ public class ProfileManager {
         return max;
     }
 
-    // ----------- Placeholders pour PROFILE OFFLINE -----------
     public String replacePlaceholders(Profile profile, String str) {
         int level = profile.getLevel();
         int maxLevel = getMaxConfiguredLevel();
@@ -205,7 +211,6 @@ public class ProfileManager {
                 .replace("%player_max_xp%", maxXpStr);
     }
 
-    // (Tu gardes aussi l'existante pour Player online si tu veux)
     public String replacePlaceholders(Player player, String str) {
         return replacePlaceholders(getProfile(player), str);
     }

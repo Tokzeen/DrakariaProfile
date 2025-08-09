@@ -3,14 +3,11 @@ package fr.drakariaprofile;
 import fr.drakariaprofile.commands.ProfilePublicCommandExecutor;
 import fr.drakariaprofile.commands.RewardsCommandExecutor;
 import fr.drakariaprofile.config.ConfigManager;
-import fr.drakariaprofile.listeners.ShopTransactionListener;
+import fr.drakariaprofile.listeners.*;
 import fr.drakariaprofile.menu.MenuManager;
 import fr.drakariaprofile.menu.RewardsMenuListener;
 import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.commands.ProfileCommandExecutor;
-import fr.drakariaprofile.listeners.BlockBreakListener;
-import fr.drakariaprofile.listeners.SmeltListener;
-import fr.drakariaprofile.listeners.MobKillListener;
 import fr.drakariaprofile.storage.SQLiteManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -78,6 +75,8 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SmeltListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new ShopTransactionListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new MobKillListener(profileManager), this);
+        getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
+        getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
 
         getCommand("drakariaProfile").setExecutor(new ProfileCommandExecutor(profileManager));
         getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
