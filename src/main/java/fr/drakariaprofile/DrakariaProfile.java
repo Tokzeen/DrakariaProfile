@@ -1,13 +1,15 @@
 package fr.drakariaprofile;
 
-import fr.drakariaprofile.commands.ProfilePublicCommandExecutor;
-import fr.drakariaprofile.commands.RewardsCommandExecutor;
+import fr.drakariaprofile.commands.*;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.listeners.*;
+import fr.drakariaprofile.menu.MainMenuListener;
 import fr.drakariaprofile.menu.MenuManager;
+import fr.drakariaprofile.menu.QuestMenuListener;
 import fr.drakariaprofile.menu.RewardsMenuListener;
 import fr.drakariaprofile.profile.ProfileManager;
-import fr.drakariaprofile.commands.ProfileCommandExecutor;
+import fr.drakariaprofile.quest.QuestCommandExecutor;
+import fr.drakariaprofile.quest.QuestManager;
 import fr.drakariaprofile.storage.SQLiteManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class DrakariaProfile extends JavaPlugin {
     private static DrakariaProfile instance;
     private ProfileManager profileManager;
+    private QuestManager questManager;
 
     // Pour le mob system (config)
     public static class MobXpConfig {
@@ -36,7 +39,8 @@ public class DrakariaProfile extends JavaPlugin {
         instance = this;
         SQLiteManager.connect();
 
-        // Crée config.yml et level.yml si n'existent pas
+
+        // Création des fichiers de config de base
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveResource("config.yml", false);
         }
@@ -53,17 +57,21 @@ public class DrakariaProfile extends JavaPlugin {
                 YamlConfiguration config = new YamlConfiguration();
                 for (int i = 0; i < 80; i++) {
                     config.set("rewards." + i + ".name", "&bRécompense #" + (i + 1));
-                    config.set("rewards." + i + ".lore", Collections.singletonList("&7Clique pour récupérer la récompense !"));
+                    config.set("rewards." + i + ".lore",
+                            Collections.singletonList("&7Clique pour récupérer la récompense !"));
                 }
                 config.save(rewardsGuiFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        // ----------------------------------------------------------------
 
+
+
+        // Chargement des configs
         ConfigManager.loadConfigs();
 
+        // Chargement des XP pour profils
         Map<String, Double> blockXpMap = loadBlockXpMap();
         Map<String, Double> smeltXpMap = loadSmeltXpMap();
         Map<String, Double> shopSellXpMap = loadShopSellXpMap();
@@ -71,6 +79,7 @@ public class DrakariaProfile extends JavaPlugin {
 
         profileManager = new ProfileManager(blockXpMap, smeltXpMap, shopSellXpMap, mobXpMap);
 
+        // Listeners pour profils
         getServer().getPluginManager().registerEvents(new BlockBreakListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new SmeltListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new ShopTransactionListener(profileManager), this);
@@ -78,20 +87,56 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
 
-        getCommand("drakariaProfile").setExecutor(new ProfileCommandExecutor(profileManager));
-        getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
+        // -----------------
+        // SYSTÈME DE QUÊTES
+        // -----------------
+        questManager = new QuestManager(getDataFolder());
 
+        // Commandes quêtes journalières
+        getCommand("quete_facile").setExecutor(new QuestCommandExecutor(questManager));
+        getCommand("quete_moyen").setExecutor(new QuestCommandExecutor(questManager));
+        getCommand("quete_difficile").setExecutor(new QuestCommandExecutor(questManager));
+        getCommand("objectifs").setExecutor(new MainQuestMenuCommand());
+        getCommand("objectif").setExecutor(new MainQuestMenuCommand());
+        getCommand("quest").setExecutor(new MainQuestMenuCommand());
+        getCommand("quests").setExecutor(new MainQuestMenuCommand());
+        getCommand("quetes").setExecutor(new MainQuestMenuCommand());
+
+        // Listeners quêtes
+        getServer().getPluginManager().registerEvents(new PlayerJoinQuestListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitQuestListener(), this);
+        getServer().getPluginManager().registerEvents(new QuestMenuListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakQuestListener(), this);
+        getServer().getPluginManager().registerEvents(new MainMenuListener(), this);
+
+        // Lancer le reset quotidien automatique des quêtes
+
+        questManager = new QuestManager(getDataFolder());
+        questManager.scheduleDailyResetProd();
+
+
+        // -----------------
         // Menu des récompenses
+        // -----------------
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
         getCommand("reward").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("rewards").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("récompenses").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("recompence").setExecutor(new RewardsCommandExecutor(menuManager));
         getServer().getPluginManager().registerEvents(new RewardsMenuListener(menuManager, profileManager), this);
+
+        // Commandes profil
+        getCommand("drakariaProfile").setExecutor(new ProfileCommandExecutor(profileManager));
+        getCommand("drakariaprofile").setExecutor(new QuestAdminCommandExecutor());
+
+        getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
     }
 
     @Override
     public void onDisable() {
+        if (questManager != null) {
+            questManager.saveAllPlayers(); // Sauvegarde toutes les quêtes
+        }
         SQLiteManager.disconnect();
     }
 
@@ -99,6 +144,7 @@ public class DrakariaProfile extends JavaPlugin {
         return instance;
     }
 
+    // =================== Chargement des maps XP ===================
     private Map<String, Double> loadBlockXpMap() {
         Map<String, Double> map = new HashMap<>();
         File file = new File(getDataFolder(), "config.yml");
@@ -107,19 +153,6 @@ public class DrakariaProfile extends JavaPlugin {
         if (config.contains("blocks")) {
             for (String key : config.getConfigurationSection("blocks").getKeys(false)) {
                 map.put(key, config.getDouble("blocks." + key, 0.0));
-            }
-        }
-        return map;
-    }
-
-    private Map<String, Double> loadShopSellXpMap() {
-        Map<String, Double> map = new HashMap<>();
-        File file = new File(getDataFolder(), "config.yml");
-        if (!file.exists()) saveResource("config.yml", false);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        if (config.contains("shop_sells")) {
-            for (String key : config.getConfigurationSection("shop_sells").getKeys(false)) {
-                map.put(key, config.getDouble("shop_sells." + key, 0.0));
             }
         }
         return map;
@@ -138,7 +171,19 @@ public class DrakariaProfile extends JavaPlugin {
         return map;
     }
 
-    // --- Load mobs mapping with XP and CHANCE ---
+    private Map<String, Double> loadShopSellXpMap() {
+        Map<String, Double> map = new HashMap<>();
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists()) saveResource("config.yml", false);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        if (config.contains("shop_sells")) {
+            for (String key : config.getConfigurationSection("shop_sells").getKeys(false)) {
+                map.put(key, config.getDouble("shop_sells." + key, 0.0));
+            }
+        }
+        return map;
+    }
+
     private Map<String, MobXpConfig> loadMobXpMap() {
         Map<String, MobXpConfig> map = new HashMap<>();
         File file = new File(getDataFolder(), "config.yml");
@@ -157,5 +202,9 @@ public class DrakariaProfile extends JavaPlugin {
 
     public ProfileManager getProfileManager() {
         return profileManager;
+    }
+
+    public QuestManager getQuestManager() {
+        return questManager;
     }
 }

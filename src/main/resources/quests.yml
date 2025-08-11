@@ -1,0 +1,227 @@
+break_diamond_ore:
+  facile:
+    - amount: 256
+      reward:
+        points: 1
+        xp: "1000-1500"
+        command: "/give %player% diamond 1"
+        item:
+          name: "&bPetit diamant"
+          lore:
+            - "&7Casse 256 diamants"
+    - amount: 512
+      reward:
+        points: 1
+        xp: "1500-2500"
+        command: "/give %player% diamond 1"
+        item:
+          name: "&bDiamant moyen"
+          lore:
+            - "&7Un peu plus dur, 512 !"
+    - amount: 1024
+      reward:
+        points: 2
+        xp: "2500-3500"
+        command: "/give %player% diamond 1"
+        item:
+          name: "&bGrand diamant"
+          lore:
+            - "&71024 blocs..."
+  moyen:
+    - amount: 2048
+      reward:
+        points: 3
+        xp: "3500-7000"
+        command: "/give %player% diamond 2"
+        item:
+          name: "&bMineur expérimenté"
+          lore:
+            - "&72048 !"
+  difficile:
+    - amount: 15000
+      reward:
+        points: 7
+        xp: "9000-13000"
+        command: "/give %player% diamond 3"
+        item:
+          name: "&cDiamant de champion"
+          lore:
+            - "&716k !!"
+    - amount: 20000
+      reward:
+        points: 10
+        xp: "13000-18000"
+        command: "/give %player% diamond 4"
+        item:
+          name: "&cDiamant de légende"
+          lore:
+            - "&720k blocks !"
+
+break_stone:
+  facile:
+    - amount: 256
+      reward:
+        points: 1
+        xp: "250-400"
+        command: "give %player% stone 16"
+        item:
+          name: "&7Petit tailleur de pierre"
+          lore:
+            - "&7Casse 256 pierres (stone)"
+    - amount: 1024
+      reward:
+        points: 1
+        xp: "600-900"
+        command: "give %player% stone 32"
+        item:
+          name: "&7Maçon aguerri"
+          lore:
+            - "&71024 blocs de stone !"
+  moyen:
+    - amount: 4096
+      reward:
+        points: 2
+        xp: "1600-2500"
+        command: "give %player% stone 64"
+        item:
+          name: "&eProfessionnel"
+          lore:
+            - "&74096 pierres"
+  difficile:
+    - amount: 10000
+      reward:
+        points: 3
+        xp: "4000-7500"
+        command: "give %player% stone 128"
+        item:
+          name: "&cTailleur légendaire"
+          lore:
+            - "&710 000 blocs de stone"
+
+break_coal_ore:
+  facile:
+    - amount: 128
+      reward:
+        points: 1
+        xp: "200-300"
+        command: "give %player% coal 8"
+        item:
+          name: "&8Petit mineur de charbon"
+          lore:
+            - "&7Casse 128 minerais de charbon"
+    - amount: 512
+      reward:
+        points: 1
+        xp: "400-800"
+        command: "give %player% coal 16"
+        item:
+          name: "&8Fosseur de charbon"
+          lore:
+            - "&7512 charbon ores !"
+  moyen:
+    - amount: 1200
+      reward:
+        points: 2
+        xp: "1200-2000"
+        command: "give %player% coal 24"
+        item:
+          name: "&8Charbonnier expérimenté"
+          lore:
+            - "&71200 minerais !"
+  difficile:
+    - amount: 5000
+      reward:
+        points: 3
+        xp: "2500-4000"
+        command: "give %player% coal 32"
+        item:
+          name: "&0Mineur de charbon ultime"
+          lore:
+            - "&75000 minerais"
+
+break_redstone_ore:
+  facile:
+    - amount: 64
+      reward:
+        points: 1
+        xp: "300-500"
+        command: "give %player% redstone 16"
+        item:
+          name: "&cApprenti électricien"
+          lore:
+            - "&7Casse 64 minerais de redstone"
+    - amount: 256
+      reward:
+        points: 1
+        xp: "700-1100"
+        command: "give %player% redstone 32"
+        item:
+          name: "&cTechnicien du courant"
+          lore:
+            - "&7256 redstone ores"
+  moyen:
+    - amount: 600
+      reward:
+        points: 2
+        xp: "1300-2000"
+        command: "give %player% redstone 64"
+        item:
+          name: "&cMaître de la redstone"
+          lore:
+            - "&7600 blocs !"
+  difficile:
+    - amount: 2000
+      reward:
+        points: 3
+        xp: "3000-6000"
+        command: "give %player% redstone 128"
+        item:
+          name: "&4Dieu du wiring"
+          lore:
+            - "&72000 minerais de redstone"
+
+break_lapis_ore:
+  facile:
+    - amount: 64
+      reward:
+        points: 1
+        xp: "250-350"
+        command: "give %player% lapis_lazuli 8"
+        item:
+          name: "&9Petit lapidaire"
+          lore:
+            - "&7Casse 64 lapis ores"
+    - amount: 200
+      reward:
+        points: 1
+        xp: "600-850"
+        command: "give %player% lapis_lazuli 16"
+        item:
+          name: "&9Tailleur de lapis"
+          lore:
+            - "&7200 minerais"
+  moyen:
+    - amount: 400
+      reward:
+        points: 2
+        xp: "1100-1650"
+        command: "give %player% lapis_lazuli 32"
+        item:
+          name: "&1Lapidaire expérimenté"
+          lore:
+            - "&7400 minerais"
+  difficile:
+    - amount: 1000
+      reward:
+        points: 3
+        xp: "2200-4000"
+        command: "give %player% lapis_lazuli 64"
+        item:
+          name: "&1Maître du bleu"
+          lore:
+            - "&71000 lapis ores"
+
+# Ajoute d'autres quêtes ici selon le même format !
+
+
+

@@ -20,31 +20,47 @@ public class SQLiteManager {
                     "name TEXT," +
                     "xp REAL," +
                     "level INT," +
-                    "frozen BOOLEAN" +
+                    "frozen BOOLEAN," +
+                    "quest_points INT DEFAULT 0," + // ✅
+                    "claimed_rewards TEXT" +
                     ");");
             st.close();
 
-            // ----- Ajoute ce BLOC juste après la création de la table -----
-            Statement alter = null;
-            try {
-                alter = connection.createStatement();
-                alter.executeUpdate("ALTER TABLE profiles ADD COLUMN claimed_rewards TEXT;");
-            } catch (SQLException ignored) {
-                // Ignore l'erreur si la colonne existe déjà
-            } finally {
-                if (alter != null) try { alter.close(); } catch (SQLException ignore) {}
+            // Colonne quest_points si manquante
+            try (Statement alter = connection.createStatement()) {
+                alter.executeUpdate("ALTER TABLE profiles ADD COLUMN quest_points INT DEFAULT 0;");
+            } catch (SQLException ignored) {}
+
+            // Bonus coffres
+            try (Statement stBonus = connection.createStatement()) {
+                stBonus.executeUpdate("CREATE TABLE IF NOT EXISTS player_quest_bonus (" +
+                        "uuid TEXT," +
+                        "category TEXT," +
+                        "bonus_claimed BOOLEAN," +
+                        "PRIMARY KEY (uuid, category)" +
+                        ");");
             }
-            // -------------------------------------------------------------
+
+            Statement st2 = connection.createStatement();
+            st2.executeUpdate("CREATE TABLE IF NOT EXISTS player_quests (" +
+                    "uuid TEXT," +
+                    "category TEXT," +
+                    "quest_id TEXT," +
+                    "amount INT," +
+                    "progress INT," +
+                    "complete BOOLEAN," +
+                    "consumed BOOLEAN," +
+                    "PRIMARY KEY (uuid, category, quest_id)" +
+                    ");");
+            st2.close();
 
         } catch (ClassNotFoundException e) {
-            System.err.println("Le driver JDBC SQLite n'est pas présent dans le plugin !");
+            System.err.println("JDBC SQLite driver missing !");
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-
 
     public static Connection getConnection() { return connection; }
 

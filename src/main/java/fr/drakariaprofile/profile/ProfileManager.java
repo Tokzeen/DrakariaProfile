@@ -3,13 +3,14 @@ package fr.drakariaprofile.profile;
 import fr.drakariaprofile.DrakariaProfile;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.storage.ProfileRepository;
+import fr.drakariaprofile.storage.SQLiteManager;
 import fr.drakariaprofile.utils.XPLoopCounter;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class ProfileManager {
     private final ProfileRepository repository = new ProfileRepository();
@@ -195,6 +196,40 @@ public class ProfileManager {
         }
         return max;
     }
+
+    private Set<Integer> deserializeClaimedRewards(String data) {
+        Set<Integer> set = new HashSet<>();
+        if (data == null || data.trim().isEmpty()) return set;
+
+        String[] parts = data.split(",");
+        for (String part : parts) {
+            try {
+                set.add(Integer.parseInt(part.trim()));
+            } catch (NumberFormatException ignored) {}
+        }
+        return set;
+    }
+
+
+    public List<Profile> getTop10ProfilesByQuestPoints() {
+        List<Profile> top = new ArrayList<>();
+        try (PreparedStatement ps = SQLiteManager.getConnection().prepareStatement(
+                "SELECT * FROM profiles ORDER BY quest_points DESC LIMIT 10")) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                String name = rs.getString("name");
+                double xp = rs.getDouble("xp");
+                int level = rs.getInt("level");
+                boolean frozen = rs.getBoolean("frozen");
+                Set<Integer> rewards = deserializeClaimedRewards(rs.getString("claimed_rewards"));
+                int qPoints = rs.getInt("quest_points");
+                top.add(new Profile(uuid, name, xp, level, frozen, rewards, qPoints));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return top;
+    }
+
 
     public String replacePlaceholders(Profile profile, String str) {
         int level = profile.getLevel();

@@ -4,21 +4,36 @@ version: 1.0
 api-version: 1.8
 author: Tokzeen
 commands:
-  profile:
-    description: Voir le profil d’un joueur (ou soi)
-  drakariaProfile:
-    description: Commandes admin du plugin
+  quete_facile:
+    description: "Ouvre les quêtes faciles"
+  quete_moyen:
+    description: "Ouvre les quêtes moyennes"
+  quete_difficile:
+    description: "Ouvre les quêtes difficiles"
+  objectifs:
+    description: "Menu Objectifs/Quêtes"
+  objectif:
+    description: "Menu Objectifs/Quêtes"
+  quest:
+    description: "Menu Objectifs/Quêtes"
+  quests:
+    description: "Menu Objectifs/Quêtes"
+  quetes:
+    description: "Menu Objectifs/Quêtes"
   rewards:
-    description: Ouvre le menu récompenses
+    description: "Menu des récompenses"
   reward:
-      aliases: [ rewards ]
-      description: Alias reward
-  récompenses:
-    aliases: [rewards]
-    description: Alias récompenses
+    description: "Menu des récompenses"
   recompence:
-    aliases: [rewards]
-    description: Alias récompenses/fr
+    description: "Menu des récompenses"
+  récompenses:
+    description: "Menu des récompenses"
+  drakariaProfile:
+    description: "Commandes de profil"
+  drakariaprofile:
+    description: "Commandes de profil"
+  profile:
+    description: "Voir un profil"
 permissions:
   drakariaprofile.admin:
     description: Accès admin à la commande drakariaProfile
