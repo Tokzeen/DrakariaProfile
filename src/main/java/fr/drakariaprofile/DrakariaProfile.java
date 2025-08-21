@@ -3,10 +3,7 @@ package fr.drakariaprofile;
 import fr.drakariaprofile.commands.*;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.listeners.*;
-import fr.drakariaprofile.menu.MainMenuListener;
-import fr.drakariaprofile.menu.MenuManager;
-import fr.drakariaprofile.menu.QuestMenuListener;
-import fr.drakariaprofile.menu.RewardsMenuListener;
+import fr.drakariaprofile.menu.*;
 import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.quest.QuestCommandExecutor;
 import fr.drakariaprofile.quest.QuestManager;
@@ -87,6 +84,11 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
 
+
+        MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
+        getServer().getPluginManager().registerEvents(new MineurMenuListener(profileManager, menuManager), this);
+
+
         // -----------------
         // SYSTÈME DE QUÊTES
         // -----------------
@@ -118,16 +120,21 @@ public class DrakariaProfile extends JavaPlugin {
         // -----------------
         // Menu des récompenses
         // -----------------
-        MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
         getCommand("reward").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("rewards").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("récompenses").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("recompence").setExecutor(new RewardsCommandExecutor(menuManager));
         getServer().getPluginManager().registerEvents(new RewardsMenuListener(menuManager, profileManager), this);
 
+        // commandes /upgrade
+        getCommand("upgrade").setExecutor(new UpgradeCommandExecutor(profileManager));
+
+        getCommand("ameliorations").setExecutor(new AmeliorationsCommand(menuManager, profileManager));
+
+
         // Commandes profil
-        getCommand("drakariaProfile").setExecutor(new ProfileCommandExecutor(profileManager));
-        getCommand("drakariaprofile").setExecutor(new QuestAdminCommandExecutor());
+        getCommand("drakariaprofile").setExecutor(new ProfileCommandExecutor(profileManager));
+        getCommand("drakariaquest").setExecutor(new QuestAdminCommandExecutor());
 
         getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
     }

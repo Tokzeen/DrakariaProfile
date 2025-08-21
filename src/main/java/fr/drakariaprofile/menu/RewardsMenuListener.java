@@ -43,7 +43,7 @@ public class RewardsMenuListener implements Listener {
             return;
         }
 
-        // Trouver si case cliquer = case récompense, et calculer le bon "level" associé
+        // Trouver si la case cliquée est celle d'une récompense
         int i = -1;
         for (int z = 0; z < rewardSlots.length; z++) {
             if (rewardSlots[z] == slotClicked) {
@@ -53,10 +53,10 @@ public class RewardsMenuListener implements Listener {
         }
         if (i == -1) return; // Pas dans la grille des coffres
 
-        int level = (page - 1) * menuManager.getRewardsPerPage() + 1 + i; // ATTENTION +1 IMPORTANT !
+        int level = (page - 1) * menuManager.getRewardsPerPage() + 1 + i; // +1 si 1-indexed
 
-        // Bloque si case "hors récompense" (ex page 3, cas où on a moins de 28 rewards à la fin)
-        if (level > menuManager.totalRewards) return;
+        // Bloque si hors récompense (ex page 3 avec moins de rewards que slots)
+        if (level > menuManager.getTotalRewards()) return;
 
         Profile profile = profileManager.getProfile(player);
 
@@ -66,13 +66,13 @@ public class RewardsMenuListener implements Listener {
             return;
         }
 
-        // Commande reward depuis level.yml (ou ta logique habituelle)
+        // Donne la récompense (commande configurée)
         String cmd = ConfigManager.getRewardForLevel(level);
         if (cmd != null && !cmd.isEmpty()) {
             cmd = cmd.replace("%player%", player.getName());
             player.getServer().dispatchCommand(player.getServer().getConsoleSender(), cmd);
         }
-        // Marque la récompense comme claim
+        // Marque claim
         profileManager.addClaimedReward(profile, level);
         player.sendMessage("§aTu as récupéré la récompense #" + level + " !");
         menuManager.openRewardsMenu(player, page);

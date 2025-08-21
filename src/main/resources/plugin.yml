@@ -28,14 +28,20 @@ commands:
     description: "Menu des récompenses"
   récompenses:
     description: "Menu des récompenses"
-  drakariaProfile:
-    description: "Commandes de profil"
-  drakariaprofile:
+  drakariaquest:
     description: "Commandes de profil"
   profile:
     description: "Voir un profil"
+  upgrade:
+    description: "Ajoute ou retire des points d'upgrade"
+  drakariaprofile:
+    description: "Commandes de profil"
+  ameliorations:
+    description: "Ouvre le menu d'améliorations du joueur"
+
 permissions:
   drakariaprofile.admin:
     description: Accès admin à la commande drakariaProfile
     default: op
 softdepend: [ShopGUIPlus]
+depend: [Vault]

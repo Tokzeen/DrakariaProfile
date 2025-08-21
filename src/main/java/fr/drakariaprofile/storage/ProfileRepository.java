@@ -11,13 +11,13 @@ public class ProfileRepository {
     public Profile getOrCreateProfile(UUID uuid, String name) {
         Profile profile = getProfile(uuid);
         if (profile == null) {
-            profile = new Profile(uuid, name, 0.0, 0, false, new HashSet<>(), 0);
+            profile = new Profile(uuid, name, 0.0, 0, false, new HashSet<>(), 0, 0, 0); // Ajoute upgrades valeurs par défaut
             saveProfile(profile);
         }
         return profile;
     }
 
-    // Charge un profil depuis la BDD (TOUS les champs, y compris questPoints et claimedRewards)
+    // Charge un profil depuis la BDD (TOUS les champs)
     public Profile getProfile(UUID uuid) {
         try (PreparedStatement pst = SQLiteManager.getConnection().prepareStatement(
                 "SELECT * FROM profiles WHERE uuid=?;")) {
@@ -28,10 +28,15 @@ public class ProfileRepository {
                     double xp = rs.getDouble("xp");
                     int level = rs.getInt("level");
                     boolean frozen = rs.getBoolean("frozen");
+
                     int questPoints = 0;
-                    try {
-                        questPoints = rs.getInt("quest_points");
-                    } catch (Exception e) { /* champ manquant */ }
+                    try { questPoints = rs.getInt("quest_points"); } catch (Exception e) {}
+
+                    int upgradeChance = 0;
+                    try { upgradeChance = rs.getInt("upgrade_chance"); } catch (Exception e) {}
+
+                    int upgradeProductivite = 0;
+                    try { upgradeProductivite = rs.getInt("upgrade_productivite"); } catch (Exception e) {}
 
                     Set<Integer> claimed = new HashSet<>();
                     String claimedStr = rs.getString("claimed_rewards");
@@ -47,7 +52,9 @@ public class ProfileRepository {
                             level,
                             frozen,
                             claimed,
-                            questPoints
+                            questPoints,
+                            upgradeChance,
+                            upgradeProductivite
                     );
                 }
             }
@@ -55,10 +62,12 @@ public class ProfileRepository {
         return null;
     }
 
-    // Sauvegarde complète du profil (incluant quest_points)
+    // Sauvegarde complète du profil (incluant points d'upgrade)
     public void saveProfile(Profile profile) {
         try (PreparedStatement pst = SQLiteManager.getConnection().prepareStatement(
-                "INSERT OR REPLACE INTO profiles(uuid, name, xp, level, frozen, claimed_rewards, quest_points) VALUES (?, ?, ?, ?, ?, ?, ?);"
+                "INSERT OR REPLACE INTO profiles"+
+                        "(uuid, name, xp, level, frozen, claimed_rewards, quest_points, upgrade_chance, upgrade_productivite) "+
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
         )) {
             pst.setString(1, profile.getUuid().toString());
             pst.setString(2, profile.getName());
@@ -70,6 +79,8 @@ public class ProfileRepository {
             );
             pst.setString(6, claimedStr);
             pst.setInt(7, profile.getQuestPoints());
+            pst.setInt(8, profile.getUpgradeChance());
+            pst.setInt(9, profile.getUpgradeProductivite());
             pst.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
     }

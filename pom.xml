@@ -22,10 +22,14 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
-        <!-- Dépendance Spigot API (1.8.8) -->
+        <!-- Spigot API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -33,14 +37,34 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Dépendance SQLite JDBC (embed) -->
+        <!-- SQLite JDBC (embed) -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>${sqlite.version}</version>
         </dependency>
 
-        <!-- Dépendance ShopGUIPlus (LOCAL only, pour dev/autocomplete) -->
+        <!-- Vault API (pour économie/banque) -->
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>Vault</artifactId>
+            <version>1.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/Vault.jar</systemPath>
+        </dependency>
+
+
+        <!-- (Optionnel) EssentialsX API pour auto-completion en IDE -->
+        <!--
+        <dependency>
+            <groupId>net.ess3</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.19.4</version>
+            <scope>provided</scope>
+        </dependency>
+        -->
+
+        <!-- ShopGUIPlus (LOCAL only, pour dev/autocomplete) -->
         <dependency>
             <groupId>net.brcdev</groupId>
             <artifactId>shopguiplus</artifactId>
@@ -48,7 +72,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/ShopGUIPlus-1.108.0.jar</systemPath>
         </dependency>
-
     </dependencies>
 
     <build>

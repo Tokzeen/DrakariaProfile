@@ -19,7 +19,7 @@ public class QuestAdminCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (args.length < 5) {
-            sender.sendMessage(ChatColor.RED + "Usage: /drakariaprofile quest <facile|moyen|difficile> <1-3> <joueur> <end|reset|restart>");
+            sender.sendMessage(ChatColor.RED + "Usage: /drakariaquest quest <facile|moyen|difficile> <1-3> <joueur> <end|reset|restart>");
             return true;
         }
 

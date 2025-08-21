@@ -41,6 +41,15 @@ public class SQLiteManager {
                         ");");
             }
 
+            // Ajout des colonnes upgrade_chance et upgrade_productivite si manquantes
+            try (Statement alter = connection.createStatement()) {
+                alter.executeUpdate("ALTER TABLE profiles ADD COLUMN upgrade_chance INT DEFAULT 0;");
+            } catch (SQLException ignored) {}
+            try (Statement alter = connection.createStatement()) {
+                alter.executeUpdate("ALTER TABLE profiles ADD COLUMN upgrade_productivite INT DEFAULT 0;");
+            } catch (SQLException ignored) {}
+
+
             Statement st2 = connection.createStatement();
             st2.executeUpdate("CREATE TABLE IF NOT EXISTS player_quests (" +
                     "uuid TEXT," +
