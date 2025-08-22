@@ -4,7 +4,9 @@ import fr.drakariaprofile.DrakariaProfile;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.storage.ProfileRepository;
 import fr.drakariaprofile.storage.SQLiteManager;
+import fr.drakariaprofile.storage.UpgradeRepository;
 import fr.drakariaprofile.utils.XPLoopCounter;
+import fr.drakariaprofile.utils.VaultHook;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -14,7 +16,11 @@ import java.util.*;
 
 public class ProfileManager {
     private final ProfileRepository repository = new ProfileRepository();
+    private final UpgradeRepository upgradeRepository = new UpgradeRepository();
+    public UpgradeRepository getUpgradeRepository() { return upgradeRepository; }
+
     private final Map<Player, Double> xpActionBarBuffer = new HashMap<>();
+    private final Map<Player, Double> moneyActionBarBuffer = new HashMap<>();
     private final Map<Player, XPLoopCounter> xpCounters = new HashMap<>();
 
     private final Map<String, Double> blockXpMap;
@@ -54,7 +60,30 @@ public class ProfileManager {
         return ConfigManager.getXpForLevel(level);
     }
 
-    public void addXp(Player player, double amount) {
+    // Ajoute à la fois XP et argent (stack pour action bar)
+    public void addXpAndMoney(Player player, double xp, double money) {
+        if (xp > 0) addXpNoActionBar(player, xp); // méthode ci-dessous
+        if (money > 0) VaultHook.deposit(player, money);
+
+        double totalXp = xpActionBarBuffer.getOrDefault(player, 0.0) + xp;
+        double totalMoney = moneyActionBarBuffer.getOrDefault(player, 0.0) + money;
+        xpActionBarBuffer.put(player, totalXp);
+        moneyActionBarBuffer.put(player, totalMoney);
+
+        sendXpAndMoneyActionBar(player, totalXp, totalMoney);
+
+        XPLoopCounter counter = xpCounters.computeIfAbsent(player, p ->
+                new XPLoopCounter(() -> {
+                    xpActionBarBuffer.remove(p);
+                    moneyActionBarBuffer.remove(p);
+                    refreshXpDisplay(p);
+                    xpCounters.remove(p);
+                }, ACTION_BAR_DISPLAY_TICKS * 50));
+        counter.startOrReset();
+    }
+
+    // Version addXp qui ne modifie que la progression, pas l'action bar directement
+    public void addXpNoActionBar(Player player, double amount) {
         Profile profile = getProfile(player);
         int currentLevel = profile.getLevel();
         double xp = profile.getXp() + amount;
@@ -81,28 +110,27 @@ public class ProfileManager {
         if (leveledUp) {
             player.sendMessage("§6Bravo ! Tu es passé niveau §e" + currentLevel + "§6 !");
         }
-        double totalBuffer = xpActionBarBuffer.getOrDefault(player, 0.0) + amount;
-        xpActionBarBuffer.put(player, totalBuffer);
-        sendXpActionBar(player, totalBuffer);
-        XPLoopCounter counter = xpCounters.computeIfAbsent(player, p ->
-                new XPLoopCounter(() -> {
-                    xpActionBarBuffer.remove(p);
-                    refreshXpDisplay(p);
-                    xpCounters.remove(p);
-                }, ACTION_BAR_DISPLAY_TICKS * 50));
-        counter.startOrReset();
+    }
+
+    // Compatibilité : ancienne méthode unitaire pour bonus xp (seulement XP)
+    public void addXp(Player player, double amount) {
+        addXpAndMoney(player, amount, 0.0);
     }
 
     private void refreshXpDisplay(Player player) {
-        if (!xpActionBarBuffer.containsKey(player) || xpActionBarBuffer.get(player) <= 0) {
-            sendActionBar(player, "");
-        } else {
-            sendXpActionBar(player, xpActionBarBuffer.get(player));
-        }
+        double xp = xpActionBarBuffer.getOrDefault(player, 0.0);
+        double money = moneyActionBarBuffer.getOrDefault(player, 0.0);
+        if (xp <= 0 && money <= 0) sendActionBar(player, "");
+        else sendXpAndMoneyActionBar(player, xp, money);
     }
 
-    private void sendXpActionBar(Player player, double total) {
-        sendActionBar(player, total > 0 ? "§a+" + Math.round(total * 10.0) / 10.0 + " XP !" : "");
+    // Affichage combiné XP + Argent (format propre)
+    public void sendXpAndMoneyActionBar(Player player, double xp, double money) {
+        if (xp <= 0 && money <= 0) return;
+        StringBuilder msg = new StringBuilder();
+        if (xp > 0) msg.append("§a+").append(String.format("%.2f", xp)).append(" XP ");
+        if (money > 0) msg.append("§e+").append(String.format("%.2f", money)).append("$");
+        sendActionBar(player, msg.toString().trim());
     }
 
     public void sendActionBar(Player player, String message) {
@@ -154,17 +182,14 @@ public class ProfileManager {
         return shopSellXpMap.getOrDefault(item, 0.0);
     }
 
-    // ----------- NOUVEAU : ENCHANTEMENT XP -----------
     public double getXpForEnchantLevel(int enchantLevel) {
         return ConfigManager.getXpForEnchantLevel(enchantLevel);
     }
 
-    // ----------- MOB KILL XP -----------
     public DrakariaProfile.MobXpConfig getMobXpConfig(String mob) {
         return mobXpMap.get(mob.toUpperCase());
     }
 
-    // ----------- Récompenses -----------
     public boolean hasClaimedReward(Player player, int level) {
         return getProfile(player).getClaimedRewards().contains(level);
     }
@@ -172,7 +197,6 @@ public class ProfileManager {
     public double getXpForAnvilLevel(int level) {
         return ConfigManager.getXpForAnvilLevel(level);
     }
-
 
     public void addClaimedReward(Profile profile, int level) {
         profile.getClaimedRewards().add(level);
@@ -210,7 +234,6 @@ public class ProfileManager {
         return set;
     }
 
-
     public List<Profile> getTop10ProfilesByQuestPoints() {
         List<Profile> top = new ArrayList<>();
         try (PreparedStatement ps = SQLiteManager.getConnection().prepareStatement(
@@ -229,7 +252,6 @@ public class ProfileManager {
         } catch (SQLException e) { e.printStackTrace(); }
         return top;
     }
-
 
     public String replacePlaceholders(Profile profile, String str) {
         int level = profile.getLevel();

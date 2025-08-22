@@ -140,85 +140,12 @@ public class MenuManager {
         player.openInventory(inv);
     }
 
+
     // (Le menu améliorations mineur reste inchangé !)
     public void openMineurUpgradeMenu(Player player, Profile profile) {
-        Inventory inv = Bukkit.createInventory(null, 54, "Améliorations : Mineur");
-
-        // Vitres rouges (adapté 1.8)
-        ItemStack redGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)14);
-        ItemMeta glassMeta = redGlass.getItemMeta();
-        glassMeta.setDisplayName(" ");
-        redGlass.setItemMeta(glassMeta);
-
-        // Barrières fer
-        ItemStack ironBar = new ItemStack(Material.IRON_FENCE, 1);
-        ItemMeta ironMeta = ironBar.getItemMeta();
-        ironMeta.setDisplayName(" ");
-        ironBar.setItemMeta(ironMeta);
-
-        // Tête joueur (slot 13)
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setOwner(player.getName());
-        meta.setDisplayName("§a" + player.getName());
-        List<String> lore = new ArrayList<>();
-        lore.add("§7Points de productivité: §b" + profile.getUpgradeProductivite());
-        lore.add("§7Points de chance: §b" + profile.getUpgradeChance());
-        meta.setLore(lore);
-        skull.setItemMeta(meta);
-        inv.setItem(13, skull);
-
-        // Nether Star slot 8
-        ItemStack netherStar = new ItemStack(Material.NETHER_STAR, 1);
-        ItemMeta starMeta = netherStar.getItemMeta();
-        starMeta.setDisplayName("§ePoints d'upgrade");
-        List<String> starLore = new ArrayList<>();
-        starLore.add("§7Productivité : §b" + profile.getUpgradeProductivite());
-        starLore.add("§7Chance : §b" + profile.getUpgradeChance());
-        starMeta.setLore(starLore);
-        netherStar.setItemMeta(starMeta);
-        inv.setItem(8, netherStar);
-
-        // Redstone slot 45
-        ItemStack redstone = new ItemStack(Material.REDSTONE);
-        ItemMeta redMeta = redstone.getItemMeta();
-        redMeta.setDisplayName("§cMenu principal");
-        redstone.setItemMeta(redMeta);
-        inv.setItem(45, redstone);
-
-        // Barrières fer grille centrale
-        for (int i = 18; i <= 44; i++) inv.setItem(i, ironBar);
-
-        // Vitres rouges bords
-        int[] redSlots = {0,1,2,3,4,5,6,7,8,46,47,48,49,50,51,52,53,9,17,27,36};
-        for (int slot : redSlots) inv.setItem(slot, redGlass);
-
-        // Stone slot 10
-        int stoneLevel = profile.getStoneUpgradeLevel();
-        ItemStack stone = new ItemStack(Material.STONE, 1);
-        ItemMeta stoneMeta = stone.getItemMeta();
-        List<String> stoneLore = new ArrayList<>();
-        if (stoneLevel == 0) {
-            stoneMeta.setDisplayName("§fAmélioration Stone §7[lv. 0]");
-            stoneLore.add("§7Coût : §c1 point de productivité");
-            stoneLore.add("§8▸ Pour chaque stone cassée : §b0,1 xp");
-            stoneLore.add("§eClique gauche pour acheter.");
-        } else if (stoneLevel == 1) {
-            stoneMeta.setDisplayName("§aAmélioration Stone §7[lv. 1]");
-            stoneLore.add("§7Coût : §c2 points de productivité");
-            stoneLore.add("§8▸ Pour chaque stone cassée : §b0,2 xp");
-            stoneLore.add("§eClique gauche pour acheter.");
-        } else if (stoneLevel == 2) {
-            stoneMeta.setDisplayName("§aAmélioration Stone §7[lvl max]");
-            stoneLore.add("§7Coût : §c5 points de productivité");
-            stoneLore.add("§8▸ Pour chaque stone cassée : §b0,2 xp §a+ §610,10$ §7(Vault)");
-            stoneLore.add("§cLvl max atteint");
-        }
-        stoneMeta.setLore(stoneLore);
-        stone.setItemMeta(stoneMeta);
-        inv.setItem(10, stone);
-
-        player.openInventory(inv);
+        MineurUpgradeMenu.openMineurUpgradeMenu(player, profile);
     }
+
+
 
 }

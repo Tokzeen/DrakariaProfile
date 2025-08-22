@@ -50,6 +50,8 @@ public class SQLiteManager {
             } catch (SQLException ignored) {}
 
 
+
+
             Statement st2 = connection.createStatement();
             st2.executeUpdate("CREATE TABLE IF NOT EXISTS player_quests (" +
                     "uuid TEXT," +
@@ -62,6 +64,20 @@ public class SQLiteManager {
                     "PRIMARY KEY (uuid, category, quest_id)" +
                     ");");
             st2.close();
+
+            // Juste après les autres CREATE TABLE IF NOT EXISTS...
+            try (Statement stUpg = connection.createStatement()) {
+                stUpg.executeUpdate(
+                        "CREATE TABLE IF NOT EXISTS player_upgrades (" +
+                                "uuid TEXT NOT NULL," +
+                                "upgrade_key TEXT NOT NULL," +
+                                "level INT DEFAULT 0," +
+                                "PRIMARY KEY (uuid, upgrade_key)," +
+                                "FOREIGN KEY (uuid) REFERENCES profiles(uuid) ON DELETE CASCADE" +
+                                ");"
+                );
+            }
+
 
         } catch (ClassNotFoundException e) {
             System.err.println("JDBC SQLite driver missing !");

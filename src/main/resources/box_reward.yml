@@ -1,0 +1,43 @@
+Caisses:
+  Quete_Rare:
+    Rarities:
+      Commun:
+        chance: 50
+        color: WHITE
+        display: "§7Commun ★"
+        items:
+          - "give {player} diamond 1"
+          - "give {player} gold_ingot 2"
+
+      Rare:
+        chance: 25
+        color: AQUA
+        display: "§bRare ★★"
+        items:
+          - "give {player} diamond 2"
+          - "give {player} gold_ingot 3"
+
+      Epique:
+        chance: 18
+        color: LIGHT_PURPLE
+        display: "§dÉpique ★★★"
+        items:
+          - "give {player} diamond 3"
+          - "give {player} gold_ingot 4"
+
+      Mythique:
+        chance: 6
+        color: RED
+        display: "§cMythique ★★★★"
+        items:
+          - "give {player} diamond 4"
+          - "give {player} gold_ingot 5"
+
+      Legendaire:
+        chance: 1
+        color: YELLOW
+        display: "§eLégendaire ★★★★★"
+        items:
+          - "give {player} diamond 5"
+          - "give {player} gold_ingot 6"
+          - "kit {player} Dtools"

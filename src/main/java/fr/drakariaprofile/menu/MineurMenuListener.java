@@ -2,6 +2,7 @@ package fr.drakariaprofile.menu;
 
 import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.profile.Profile;
+import fr.drakariaprofile.storage.UpgradeRepository;
 import fr.drakariaprofile.utils.VaultHook;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,10 +13,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class MineurMenuListener implements Listener {
     private final ProfileManager profileManager;
+    private final UpgradeRepository upgradeRepository;
     private final MenuManager menuManager;
 
     public MineurMenuListener(ProfileManager pm, MenuManager mm) {
         this.profileManager = pm;
+        this.upgradeRepository = pm.getUpgradeRepository();
         this.menuManager = mm;
     }
 
@@ -28,17 +31,23 @@ public class MineurMenuListener implements Listener {
         if (clicked == null) return;
 
         Material mat = clicked.getType();
-        // Interdit le clic sur éléments non achetables
         if (mat == Material.STAINED_GLASS_PANE ||
                 mat == Material.IRON_FENCE ||
-                mat == Material.NETHER_STAR) return;
+                mat == Material.NETHER_STAR ||
+                mat == Material.SKULL_ITEM) return;
 
         Player player = (Player) event.getWhoClicked();
         Profile profile = profileManager.getProfile(player);
 
-        // Achat d'amélioration Stone
-        if (mat == Material.STONE) {
-            int stoneLevel = profile.getStoneUpgradeLevel();
+        // Quitter le menu avec le colorant rouge (slot 36)
+        if (mat == Material.REDSTONE && event.getRawSlot() == 36) {
+            player.closeInventory();
+            return;
+        }
+
+        // Achat/amélioration stone, slot 10
+        if (mat == Material.STONE && event.getRawSlot() == 10) {
+            int stoneLevel = upgradeRepository.getUpgradeLevel(player.getUniqueId(), "stone");
             int cout = stoneLevel == 0 ? 1 : (stoneLevel == 1 ? 2 : 5);
             if (stoneLevel >= 2) {
                 player.sendMessage("§cAmélioration stone déjà au niveau max !");
@@ -49,13 +58,14 @@ public class MineurMenuListener implements Listener {
                 return;
             }
             profile.setUpgradeProductivite(profile.getUpgradeProductivite() - cout);
-            profile.setStoneUpgradeLevel(stoneLevel + 1);
             profileManager.saveProfile(profile);
+            upgradeRepository.setUpgradeLevel(player.getUniqueId(), "stone", stoneLevel + 1);
 
-            player.sendMessage("§aAmélioration stone lv." + (stoneLevel + 1) + " achetée !");
+            player.sendMessage("§aAmélioration Stone lv." + (stoneLevel + 1) + " achetée !");
             if (stoneLevel + 1 == 2) {
                 VaultHook.deposit(player, 0.1);
             }
+            // Réouvre le menu mis à jour
             menuManager.openMineurUpgradeMenu(player, profile);
         }
     }

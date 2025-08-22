@@ -1,6 +1,7 @@
 package fr.drakariaprofile.menu;
 
 import fr.drakariaprofile.profile.Profile;
+import fr.drakariaprofile.DrakariaProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -8,40 +9,47 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.DyeColor;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MineurUpgradeMenu {
 
-    public void openMineurUpgradeMenu(Player player, Profile profile) {
+    public static void openMineurUpgradeMenu(Player player, Profile profile) {
         Inventory inv = Bukkit.createInventory(null, 54, "Améliorations : Mineur");
 
-        // Vitres rouges (non cliquables)
-        ItemStack redGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)15);
+        // Rouge (bords)
+        ItemStack redGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)14);
         ItemMeta glassMeta = redGlass.getItemMeta();
         glassMeta.setDisplayName(" ");
         redGlass.setItemMeta(glassMeta);
+        for (int i = 0; i < 54; i++) inv.setItem(i, redGlass);
 
-        // Barrières en fer (non cliquables)
+        // Barreaux (grille centrale)
         ItemStack ironBar = new ItemStack(Material.IRON_FENCE);
-        ItemMeta ironMeta = ironBar.getItemMeta();
-        ironMeta.setDisplayName(" ");
-        ironBar.setItemMeta(ironMeta);
+        ItemMeta ironMeta = ironBar.getItemMeta(); ironMeta.setDisplayName(" "); ironBar.setItemMeta(ironMeta);
+        for (int row = 1; row <= 4; row++) for (int col = 1; col <= 7; col++) inv.setItem(row * 9 + col, ironBar);
 
-        // Tête du joueur (slot 13)
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)3); // 3 = joueur
+        // Tête joueur (slot 4)
+        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setOwner(player.getName()); // À la place de setOwningPlayer (1.8 only)
-        meta.setDisplayName("§a" + player.getName());
+        meta.setOwner(player.getName());
+        meta.setDisplayName("§e" + player.getName());
+        List<String> skullLore = Arrays.asList(
+                "§7Niveau : §a" + profile.getLevel(),
+                "§7XP : §b" + String.format("%.2f", profile.getXp())
+        );
+        meta.setLore(skullLore);
         skull.setItemMeta(meta);
-        inv.setItem(13, skull);
+        inv.setItem(4, skull);
 
-
-        // Nether Star (slot 8) - Points d'upgrade
+        // Nether star (slot 6)
         ItemStack netherStar = new ItemStack(Material.NETHER_STAR);
         ItemMeta starMeta = netherStar.getItemMeta();
-        starMeta.setDisplayName("§ePoints d'upgrade");
+        starMeta.setDisplayName("§eVos Points d'upgrade");
         List<String> starLore = new ArrayList<>();
         starLore.add("§7Productivité : §b" + profile.getUpgradeProductivite());
         starLore.add("§7Chance : §b" + profile.getUpgradeChance());
@@ -49,44 +57,42 @@ public class MineurUpgradeMenu {
         netherStar.setItemMeta(starMeta);
         inv.setItem(8, netherStar);
 
-        // Redstone (slot 45, retour/menu principal)
-        ItemStack redstone = new ItemStack(Material.REDSTONE);
-        ItemMeta redMeta = redstone.getItemMeta();
-        redMeta.setDisplayName("§cMenu principal");
-        redstone.setItemMeta(redMeta);
-        inv.setItem(45, redstone);
+        // Colorant rouge (quit) slot 36 (coin bas gauche)
+        ItemStack quit = new ItemStack(Material.REDSTONE);
+        ItemMeta quitMeta = quit.getItemMeta();
+        quitMeta.setDisplayName("§cQuitter le menu");
+        quit.setItemMeta(quitMeta);
+        inv.setItem(45, quit);
 
-        // Barrières en fer (slots 18 à 44)
-        for (int i = 18; i <= 44; i++) {
-            inv.setItem(i, ironBar);
-        }
-
-        // Vitres rouges sur les bords et coins
-        int[] redSlots = {0,1,2,3,4,5,6,7,8,46,47,48,49,50,51,52,53,9,17,27,36};
-        for (int slot : redSlots) {
-            inv.setItem(slot, redGlass);
-        }
-
-        // Stone (slot 10) - Amélioration Mineur
-        int stoneLevel = profile.getStoneUpgradeLevel();
+        // Affichage STONE (slot 10)
+        int stoneLevel = DrakariaProfile.getInstance().getProfileManager()
+                .getUpgradeRepository().getUpgradeLevel(player.getUniqueId(), "stone");
         ItemStack stone = new ItemStack(Material.STONE);
         ItemMeta stoneMeta = stone.getItemMeta();
         List<String> stoneLore = new ArrayList<>();
+        stoneMeta.setDisplayName("§bAmélioration Stone");
+        stoneLore.add("§7XPxp obtenue par stone cassez");
+        // Valeurs dynamiques d'upgrade selon level :
         if (stoneLevel == 0) {
-            stoneMeta.setDisplayName("§fAmélioration Stone §7[lv. 0]");
-            stoneLore.add("§7Coût : §c1 point de productivité");
-            stoneLore.add("§8▸ Pour chaque stone cassée : §b0,1 xp");
-            stoneLore.add("§eClique gauche pour acheter.");
+            stoneLore.add("§7Vous gagnez : §a0.1xp");
         } else if (stoneLevel == 1) {
-            stoneMeta.setDisplayName("§aAmélioration Stone §7[lv. 1]");
-            stoneLore.add("§7Coût : §c2 points de productivité");
-            stoneLore.add("§8▸ Pour chaque stone cassée : §b0,2 xp");
-            stoneLore.add("§eClique gauche pour acheter.");
+            stoneLore.add("§7Vous gagnez : §a0.2xp");
         } else if (stoneLevel == 2) {
-            stoneMeta.setDisplayName("§aAmélioration Stone §7[lvl max]");
-            stoneLore.add("§7Coût : §c5 points de productivité");
-            stoneLore.add("§8▸ Pour chaque stone cassée : §b0,2 xp §a+ §610,10$ §7(Vault)");
-            stoneLore.add("§cLvl max atteint");
+            stoneLore.add("§7Vous gagnez : §a0.2xp §e+ 0.10$");
+        }
+        stoneLore.add("");
+        stoneLore.add("§7§lNiveaux :");
+        stoneLore.add("§8- Par défaut §a0.1xp");
+        stoneLore.add("§8- Niveau 1   §a0.2xp");
+        stoneLore.add("§8- Niveau 2   §a0.2xp §e+ 0.10$");
+
+        stoneLore.add("");
+        if (stoneLevel < 2) {
+            stoneLore.add("§eClique gauche pour améliorer");
+            if (stoneLevel == 0) stoneLore.add("§7Prochain niveau : §4(cout 1 productivité)");
+            else stoneLore.add("§7Prochain niveau : §4(cout 2 productivités)");
+        } else {
+            stoneLore.add("§a✓ Niveau maximal atteint");
         }
         stoneMeta.setLore(stoneLore);
         stone.setItemMeta(stoneMeta);
