@@ -38,7 +38,11 @@ commands:
     description: "Commandes de profil"
   ameliorations:
     description: "Ouvre le menu d'améliorations du joueur"
-
+  drakariareward:
+    description: Ouvre la caisse de récompenses
+    usage: /drakariareward <player> <boxName>
+    permission: drakariareward.admin
+    permission-message: §cTu n'as pas la permission
 permissions:
   drakariaprofile.admin:
     description: Accès admin à la commande drakariaProfile

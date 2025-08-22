@@ -1,5 +1,6 @@
 package fr.drakariaprofile;
 
+import fr.drakariaprofile.box.BoxRewardManager;
 import fr.drakariaprofile.commands.*;
 import fr.drakariaprofile.config.ConfigManager;
 import fr.drakariaprofile.listeners.*;
@@ -20,7 +21,7 @@ public class DrakariaProfile extends JavaPlugin {
     private static DrakariaProfile instance;
     private ProfileManager profileManager;
     private QuestManager questManager;
-
+    private BoxRewardManager boxRewardManager;
     // Pour le mob system (config)
     public static class MobXpConfig {
         public final double xp;
@@ -137,6 +138,15 @@ public class DrakariaProfile extends JavaPlugin {
         getCommand("drakariaquest").setExecutor(new QuestAdminCommandExecutor());
 
         getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
+
+
+        if (!new File(getDataFolder(), "box_reward.yml").exists()) {
+            saveResource("box_reward.yml", false);
+        }
+        boxRewardManager = new BoxRewardManager(getDataFolder());
+        getCommand("drakariareward").setExecutor(new fr.drakariaprofile.commands.BoxRewardCommand(boxRewardManager));
+        getServer().getPluginManager().registerEvents(new fr.drakariaprofile.menu.BoxRewardMenuListener(), this);
+
     }
 
     @Override
@@ -206,6 +216,10 @@ public class DrakariaProfile extends JavaPlugin {
         }
         return map;
     }
+
+
+
+
 
     public ProfileManager getProfileManager() {
         return profileManager;
