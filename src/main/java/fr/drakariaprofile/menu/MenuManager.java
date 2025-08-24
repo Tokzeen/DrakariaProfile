@@ -146,6 +146,10 @@ public class MenuManager {
         MineurUpgradeMenu.openMineurUpgradeMenu(player, profile);
     }
 
+    public void openChasseurUpgradeMenu(Player player, Profile profile) {
+        ChasseurUpgradeMenu.openChasseurUpgradeMenu(player, profile);
+    }
+
 
 
 }

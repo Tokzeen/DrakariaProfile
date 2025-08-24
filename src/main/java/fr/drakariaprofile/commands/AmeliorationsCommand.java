@@ -24,12 +24,22 @@ public class AmeliorationsCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        if (args.length >= 1 && args[0].equalsIgnoreCase("mineur")) {
-            Profile profile = profileManager.getProfile(player);
-            menuManager.openMineurUpgradeMenu(player, profile);
-            return true;
+        Profile profile = profileManager.getProfile(player);
+
+        if (args.length >= 1) {
+            if (args[0].equalsIgnoreCase("mineur")) {
+                menuManager.openMineurUpgradeMenu(player, profile);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("chasseur")) {
+                menuManager.openChasseurUpgradeMenu(player, profile);
+                return true;
+            }
         }
-        sender.sendMessage("§eUsage : /ameliorations mineur");
+        sender.sendMessage("§eUsage : /ameliorations mineur ou /ameliorations chasseur");
         return true;
     }
+
+
+
 }

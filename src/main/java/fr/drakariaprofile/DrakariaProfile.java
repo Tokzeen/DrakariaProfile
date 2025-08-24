@@ -88,6 +88,7 @@ public class DrakariaProfile extends JavaPlugin {
 
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
         getServer().getPluginManager().registerEvents(new MineurMenuListener(profileManager, menuManager), this);
+        getServer().getPluginManager().registerEvents(new ChasseurMenuListener(profileManager, menuManager), this);
 
 
         // -----------------
