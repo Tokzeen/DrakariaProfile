@@ -84,6 +84,7 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MobKillListener(profileManager), this);
         getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
+        getServer().getPluginManager().registerEvents(new KillListener(profileManager), this);
 
 
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());

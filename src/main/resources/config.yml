@@ -3,8 +3,8 @@ blocks:
   COAL_ORE: 0.30
   REDSTONE_ORE: 0.40
   LAPIS_ORE: 0.50
-  DIAMOND_ORE: 1.00
-  EMERALD_ORE: 1.50
+  DIAMOND_ORE: 15.00
+  EMERALD_ORE: 25.00
   # Ajoute ici des blocs et leur xp
 smelts:
   IRON_INGOT: 0.50
@@ -15,27 +15,71 @@ shop_sells:
   IRON_INGOT: 0.2 # 0.2 XP par lingot vendu
   # etc.
 mobs:
+  # Passifs
+  CHICKEN:
+    xp: 1
+    chance: 50
+  COW:
+    xp: 2
+    chance: 50
+  PIG:
+    xp: 2
+    chance: 50
+  SHEEP:
+    xp: 2
+    chance: 50
+  RABBIT:
+    xp: 5
+    chance: 40
+  MOOSHROOM:
+    xp: 3
+    chance: 40
+
+
+  # Hostiles Overworld
   ZOMBIE:
     xp: 5
-    chance: 50  # pourcent (0-100)
+    chance: 50
+  SPIDER:
+    xp: 1
+    chance: 30
   SKELETON:
     xp: 7
-    chance: 15
+    chance: 20
   CREEPER:
-    xp: 10
+    xp: 50
     chance: 5
   ENDERMAN:
-    xp: 12
+    xp: 100
     chance: 100
+  CAVE_SPIDER:
+    xp: 2
+    chance: 25
+  WITCH:
+    xp: 20
+    chance: 5
+
+  # Nether
+  BLAZE:
+    xp: 20
+    chance: 10
+  ZOMBIE_PIGMAN:
+    xp: 10
+    chance: 25
+
+
 
 enchant_rewards:
   '1-10': 10
-  '11-15': 20
+  '11-15': 15
   '16-25': 25
-  '26-30': 45
+  '26-30': 35
 
 anvil_rewards:
   '1-5': 5
   '6-10': 10
   '11-15': 20
   '16-40': 45
+
+## PVP ##
+kill_xp: 100

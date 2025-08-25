@@ -6,38 +6,123 @@ Caisses:
         color: WHITE
         display: "§7Commun ★"
         items:
-          - "give {player} diamond 1"
-          - "give {player} gold_ingot 2"
-
+          - "give {player} bread 10"
+          - "give {player} iron_ingot 3"
+          - "give {player} xp_bottle 5"
       Rare:
-        chance: 25
+        chance: 30
         color: AQUA
         display: "§bRare ★★"
         items:
-          - "give {player} diamond 2"
-          - "give {player} gold_ingot 3"
-
+          - "give {player} diamond 3"
+          - "give {player} gold_ingot 4"
+          - "give {player} golden_apple 1"
       Epique:
-        chance: 18
+        chance: 12
         color: LIGHT_PURPLE
         display: "§dÉpique ★★★"
         items:
-          - "give {player} diamond 3"
-          - "give {player} gold_ingot 4"
-
+          - "give {player} diamond 4"
+          - "give {player} emerald 3"
+          - "give {player} xp_bottle 15"
+          - "give {player} golden_apple 2"
       Mythique:
-        chance: 6
+        chance: 7
         color: RED
         display: "§cMythique ★★★★"
         items:
-          - "give {player} diamond 4"
-          - "give {player} gold_ingot 5"
+          - "give {player} diamond 6"
+          - "give {player} gold_ingot 8"
+          - "give {player} emerald 5"
+      Legendaire:
+        chance: 1
+        color: YELLOW
+        display: "§eLégendaire ★★★★★"
+        items:
+          - "give {player} diamond 10"
+          - "give {player} golden_apple 5"
+          - "kit {player} Dtools"
 
+  Quete_Commun:
+    Rarities:
+      Commun:
+        chance: 50
+        color: WHITE
+        display: "§7Commun ★"
+        items:
+          - "give {player} bread 8"
+          - "give {player} iron_ingot 2"
+          - "give {player} xp_bottle 2"
+      Rare:
+        chance: 30
+        color: AQUA
+        display: "§bRare ★★"
+        items:
+          - "give {player} gold_ingot 2"
+          - "give {player} xp_bottle 6"
+          - "give {player} pumpkin_pie 4"
+      Epique:
+        chance: 12
+        color: LIGHT_PURPLE
+        display: "§dÉpique ★★★"
+        items:
+          - "give {player} diamond 1"
+          - "give {player} emerald 1"
+          - "give {player} golden_apple 1"
+      Mythique:
+        chance: 7
+        color: RED
+        display: "§cMythique ★★★★"
+        items:
+          - "give {player} diamond 3"
+          - "give {player} xp_bottle 10"
       Legendaire:
         chance: 1
         color: YELLOW
         display: "§eLégendaire ★★★★★"
         items:
           - "give {player} diamond 5"
-          - "give {player} gold_ingot 6"
+          - "kit {player} Dtools"
+
+  Quete_Epique:
+    Rarities:
+      Commun:
+        chance: 50
+        color: WHITE
+        display: "§7Commun ★"
+        items:
+          - "give {player} bread 12"
+          - "give {player} iron_ingot 4"
+          - "give {player} xp_bottle 4"
+      Rare:
+        chance: 30
+        color: AQUA
+        display: "§bRare ★★"
+        items:
+          - "give {player} gold_ingot 5"
+          - "give {player} xp_bottle 12"
+          - "give {player} golden_carrot 8"
+      Epique:
+        chance: 12
+        color: LIGHT_PURPLE
+        display: "§dÉpique ★★★"
+        items:
+          - "give {player} diamond 6"
+          - "give {player} emerald 5"
+          - "give {player} golden_apple 2"
+      Mythique:
+        chance: 7
+        color: RED
+        display: "§cMythique ★★★★"
+        items:
+          - "give {player} diamond 10"
+          - "give {player} emerald 10"
+          - "give {player} xp_bottle 25"
+      Legendaire:
+        chance: 1
+        color: YELLOW
+        display: "§eLégendaire ★★★★★"
+        items:
+          - "give {player} diamond 15"
+          - "give {player} golden_apple 10"
           - "kit {player} Dtools"

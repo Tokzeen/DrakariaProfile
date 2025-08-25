@@ -27,6 +27,7 @@ public class UpgradeRepository {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
+
     public Map<String, Integer> getUpgrades(UUID uuid) {
         Map<String, Integer> upgrades = new HashMap<>();
         try (PreparedStatement pst = SQLiteManager.getConnection().prepareStatement(

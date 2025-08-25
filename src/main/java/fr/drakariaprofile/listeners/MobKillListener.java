@@ -26,17 +26,24 @@ public class MobKillListener implements Listener {
         DrakariaProfile.MobXpConfig mobConfig = profileManager.getMobXpConfig(mobKey);
         if (mobConfig == null || mobConfig.xp <= 0) return;
 
-        // Récupère le niveau de l'amélioration "chasseur"
-        int chasseurLevel = profileManager.getUpgradeRepository().getUpgradeLevel(player.getUniqueId(), "hunter");
+        // Prend le niveau d'amélioration pour ce mob
+        int mobChasseurLevel = profileManager.getUpgradeRepository().getUpgradeLevel(player.getUniqueId(), "hunter_" + mobKey);
 
-        // Calcul de la probabilité de drop xp (addition du bonus chasseur)
-        double chance = mobConfig.chance;
-        if (chasseurLevel == 1) chance += 15; // ajuste ce bonus à ta convenance
-        else if (chasseurLevel == 2) chance += 50;
-        chance = Math.min(chance, 100.0); // clamp à 100%
+        // Palier = même logique que menu
+        int[] paliers = fr.drakariaprofile.menu.ChasseurUpgradeMenu.getMobChasseurUpgradeSteps(mobKey);
+
+        double xpChance = mobConfig.chance;
+        if (mobChasseurLevel > 0) {
+            // Additionne le bonus de palier
+            for (int i = 0; i < mobChasseurLevel && i < paliers.length; i++) {
+                xpChance += paliers[i];
+            }
+        }
+        if (mobChasseurLevel >= paliers.length) xpChance = 100;
+        xpChance = Math.min(xpChance, 100);
 
         double roll = ThreadLocalRandom.current().nextDouble(0, 100);
-        if (roll < chance) { // À 100%, c'est garanti
+        if (roll < xpChance) {
             profileManager.addXp(player, mobConfig.xp);
         }
     }

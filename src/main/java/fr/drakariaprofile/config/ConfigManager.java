@@ -38,6 +38,11 @@ public class ConfigManager {
         return levelConfig.getString("rewards." + level, "");
     }
 
+    public static double getKillXp() {
+        return breackConfig.getDouble("kill_xp", 100.0);
+    }
+
+
     public static double getXpForAnvilLevel(int level) {
         if (!breackConfig.contains("anvil_rewards")) return 0.0;
         for (String range : breackConfig.getConfigurationSection("anvil_rewards").getKeys(false)) {

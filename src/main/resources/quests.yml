@@ -4,58 +4,61 @@ break_diamond_ore:
       reward:
         points: 1
         xp: "1000-1500"
-        command: "/give %player% diamond 1"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&bPetit diamant"
+          name: "&7Diamant Commun"
           lore:
-            - "&7Casse 256 diamants"
+            - "&7Casse 256 diamants (Commun)"
     - amount: 512
       reward:
         points: 1
         xp: "1500-2500"
-        command: "/give %player% diamond 1"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&bDiamant moyen"
+          name: "&7Diamant Commun ++"
           lore:
-            - "&7Un peu plus dur, 512 !"
+            - "&7512 blocs (Commun)"
     - amount: 1024
       reward:
         points: 2
         xp: "2500-3500"
-        command: "/give %player% diamond 1"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&bGrand diamant"
+          name: "&7Diamant Commun MAX"
           lore:
-            - "&71024 blocs..."
+            - "&71024 blocs de diamant (Commun)"
+
   moyen:
     - amount: 2048
       reward:
         points: 3
         xp: "3500-7000"
-        command: "/give %player% diamond 2"
+        command: "drakariareward %player% Quete_Rare"
         item:
-          name: "&bMineur expérimenté"
+          name: "&3Diamant Rare"
           lore:
-            - "&72048 !"
+            - "&72048 diamants (Rare)"
+
   difficile:
     - amount: 15000
       reward:
         points: 7
         xp: "9000-13000"
-        command: "/give %player% diamond 3"
+        command: "drakariareward %player% Quete_Epique"
         item:
-          name: "&cDiamant de champion"
+          name: "&dDiamant Épique"
           lore:
-            - "&716k !!"
+            - "&716k diamants (Épique)"
     - amount: 20000
       reward:
         points: 10
         xp: "13000-18000"
-        command: "/give %player% diamond 4"
+        command: "drakariareward %player% Quete_Epique"
         item:
-          name: "&cDiamant de légende"
+          name: "&dDiamant Épique MAX"
           lore:
-            - "&720k blocks !"
+            - "&720k blocs (Épique)"
+
 
 break_stone:
   facile:
@@ -63,40 +66,43 @@ break_stone:
       reward:
         points: 1
         xp: "250-400"
-        command: "give %player% stone 16"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&7Petit tailleur de pierre"
+          name: "&7Pierre Commune"
           lore:
-            - "&7Casse 256 pierres (stone)"
+            - "&7Casse 256 pierres (Commun)"
     - amount: 1024
       reward:
         points: 1
         xp: "600-900"
-        command: "give %player% stone 32"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&7Maçon aguerri"
+          name: "&7Maçon Commun"
           lore:
-            - "&71024 blocs de stone !"
+            - "&71024 pierres (Commun)"
+
   moyen:
     - amount: 4096
       reward:
         points: 2
         xp: "1600-2500"
-        command: "give %player% stone 64"
+        command: "drakariareward %player% Quete_Rare"
         item:
-          name: "&eProfessionnel"
+          name: "&bPierre Rare"
           lore:
-            - "&74096 pierres"
+            - "&74096 pierres (Rare)"
+
   difficile:
     - amount: 10000
       reward:
         points: 3
         xp: "4000-7500"
-        command: "give %player% stone 128"
+        command: "drakariareward %player% Quete_Epique"
         item:
-          name: "&cTailleur légendaire"
+          name: "&dTailleur Épique"
           lore:
-            - "&710 000 blocs de stone"
+            - "&710k pierres (Épique)"
+
 
 break_coal_ore:
   facile:
@@ -104,40 +110,43 @@ break_coal_ore:
       reward:
         points: 1
         xp: "200-300"
-        command: "give %player% coal 8"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&8Petit mineur de charbon"
+          name: "&8Charbon Commun"
           lore:
-            - "&7Casse 128 minerais de charbon"
+            - "&7Casse 128 minerais de charbon (Commun)"
     - amount: 512
       reward:
         points: 1
         xp: "400-800"
-        command: "give %player% coal 16"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&8Fosseur de charbon"
+          name: "&8Charbon Commun ++"
           lore:
-            - "&7512 charbon ores !"
+            - "&7512 charbon ores (Commun)"
+
   moyen:
     - amount: 1200
       reward:
         points: 2
         xp: "1200-2000"
-        command: "give %player% coal 24"
+        command: "drakariareward %player% Quete_Rare"
         item:
-          name: "&8Charbonnier expérimenté"
+          name: "&bCharbon Rare"
           lore:
-            - "&71200 minerais !"
+            - "&71200 minerais (Rare)"
+
   difficile:
     - amount: 5000
       reward:
         points: 3
         xp: "2500-4000"
-        command: "give %player% coal 32"
+        command: "drakariareward %player% Quete_Epique"
         item:
-          name: "&0Mineur de charbon ultime"
+          name: "&dCharbon Épique"
           lore:
-            - "&75000 minerais"
+            - "&75000 minerais (Épique)"
+
 
 break_redstone_ore:
   facile:
@@ -145,40 +154,43 @@ break_redstone_ore:
       reward:
         points: 1
         xp: "300-500"
-        command: "give %player% redstone 16"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&cApprenti électricien"
+          name: "&cRedstone Commune"
           lore:
-            - "&7Casse 64 minerais de redstone"
+            - "&7Casse 64 minerais de redstone (Commun)"
     - amount: 256
       reward:
         points: 1
         xp: "700-1100"
-        command: "give %player% redstone 32"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&cTechnicien du courant"
+          name: "&cRedstone Commun ++"
           lore:
-            - "&7256 redstone ores"
+            - "&7256 redstone ores (Commun)"
+
   moyen:
     - amount: 600
       reward:
         points: 2
         xp: "1300-2000"
-        command: "give %player% redstone 64"
+        command: "drakariareward %player% Quete_Rare"
         item:
-          name: "&cMaître de la redstone"
+          name: "&bRedstone Rare"
           lore:
-            - "&7600 blocs !"
+            - "&7600 minerais (Rare)"
+
   difficile:
     - amount: 2000
       reward:
         points: 3
         xp: "3000-6000"
-        command: "give %player% redstone 128"
+        command: "drakariareward %player% Quete_Epique"
         item:
-          name: "&4Dieu du wiring"
+          name: "&dRedstone Épique"
           lore:
-            - "&72000 minerais de redstone"
+            - "&72000 minerais (Épique)"
+
 
 break_lapis_ore:
   facile:
@@ -186,42 +198,39 @@ break_lapis_ore:
       reward:
         points: 1
         xp: "250-350"
-        command: "give %player% lapis_lazuli 8"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&9Petit lapidaire"
+          name: "&9Lapis Commun"
           lore:
-            - "&7Casse 64 lapis ores"
+            - "&7Casse 64 lapis ores (Commun)"
     - amount: 200
       reward:
         points: 1
         xp: "600-850"
-        command: "give %player% lapis_lazuli 16"
+        command: "drakariareward %player% Quete_Commun"
         item:
-          name: "&9Tailleur de lapis"
+          name: "&9Tailleur Commun"
           lore:
-            - "&7200 minerais"
+            - "&7200 lapis ores (Commun)"
+
   moyen:
     - amount: 400
       reward:
         points: 2
         xp: "1100-1650"
-        command: "give %player% lapis_lazuli 32"
+        command: "drakariareward %player% Quete_Rare"
         item:
-          name: "&1Lapidaire expérimenté"
+          name: "&bLapis Rare"
           lore:
-            - "&7400 minerais"
+            - "&7400 lapis ores (Rare)"
+
   difficile:
     - amount: 1000
       reward:
         points: 3
         xp: "2200-4000"
-        command: "give %player% lapis_lazuli 64"
+        command: "drakariareward %player% Quete_Epique"
         item:
-          name: "&1Maître du bleu"
+          name: "&dLapis Épique"
           lore:
-            - "&71000 lapis ores"
-
-# Ajoute d'autres quêtes ici selon le même format !
-
-
-
+            - "&71000 lapis ores (Épique)"

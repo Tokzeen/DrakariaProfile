@@ -30,14 +30,22 @@ public class BoxRewardManager {
     public RarityReward drawReward(String boxName) {
         List<RarityReward> rarities = boxes.get(boxName);
         if (rarities == null) return null;
+
         int total = 0;
         for (RarityReward r : rarities)
             total += r.chance;
+        if (total <= 0) return null; // sécurité supplémentaire
+
         int rand = new Random().nextInt(total) + 1;
         int cumul = 0;
         for (RarityReward r : rarities) {
             cumul += r.chance;
             if (rand <= cumul) {
+                // PROTECTION contre liste vide ou nulle
+                if (r.items == null || r.items.isEmpty()) {
+                    System.out.println("BoxRewardManager WARN: La rareté '" + r.name + "' est vide dans la box '" + boxName + "'.");
+                    continue; // saute la rareté
+                }
                 String command = r.items.get(new Random().nextInt(r.items.size()));
                 return new RarityReward(r.name, r.chance, r.color, r.display, Collections.singletonList(command));
             }

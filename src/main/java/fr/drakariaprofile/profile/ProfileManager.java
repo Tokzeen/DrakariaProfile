@@ -26,7 +26,7 @@ public class ProfileManager {
     private final Map<String, Double> blockXpMap;
     private final Map<String, Double> smeltXpMap;
     private final Map<String, Double> shopSellXpMap;
-    private final Map<String, DrakariaProfile.MobXpConfig> mobXpMap;
+    public final Map<String, DrakariaProfile.MobXpConfig> mobXpMap;
     private final int ACTION_BAR_DISPLAY_TICKS = 15; // 0.75s
 
     public ProfileManager(Map<String, Double> blockXpMap,
@@ -189,6 +189,7 @@ public class ProfileManager {
     public DrakariaProfile.MobXpConfig getMobXpConfig(String mob) {
         return mobXpMap.get(mob.toUpperCase());
     }
+
 
     public boolean hasClaimedReward(Player player, int level) {
         return getProfile(player).getClaimedRewards().contains(level);

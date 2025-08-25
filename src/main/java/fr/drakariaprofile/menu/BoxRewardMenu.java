@@ -16,20 +16,32 @@ public class BoxRewardMenu {
         Inventory inv = Bukkit.createInventory(null, 27, "Ouverture de " + boxName);
         setDecor(inv);
 
-        List<BoxRewardManager.RarityReward> rarities = manager.getRarities(boxName);
+        List<BoxRewardManager.RarityReward> allRarities = manager.getRarities(boxName);
+        // Filtre les raretés SANS items
+        List<BoxRewardManager.RarityReward> rarities = new ArrayList<>();
+        for (BoxRewardManager.RarityReward rr : allRarities)
+            if (rr.items != null && !rr.items.isEmpty())
+                rarities.add(rr);
+        if (rarities.isEmpty()) {
+            player.sendMessage("§cErreur: aucune récompense configurée !");
+            return;
+        }
 
         Random r = new Random();
-        int animationLength = 20; // nombre de ticks d'animation
-        int slotsCount = 7; // nombre de slots à afficher (slots 10 à 16)
+        int animationLength = 20;
+        int slotsCount = 7;
 
-        // On prépare une séquence aléatoire + lot gagnant à la fin
         List<BoxRewardManager.RarityReward> sequence = new ArrayList<>();
         for (int i = 0; i < animationLength; i++) {
             sequence.add(rarities.get(r.nextInt(rarities.size())));
         }
-        BoxRewardManager.RarityReward finalReward = manager.drawReward(boxName);
 
-        // On ajoute des copies du lot gagnant pour le slide final vers le centre (slot 13)
+        BoxRewardManager.RarityReward finalReward = manager.drawReward(boxName);
+        if (finalReward == null || finalReward.items == null || finalReward.items.isEmpty()) {
+            player.sendMessage("§cErreur: aucune récompense attribuée (config incomplète).");
+            return;
+        }
+
         for (int i = 0; i < slotsCount; i++) {
             sequence.add(finalReward);
         }
@@ -38,17 +50,13 @@ public class BoxRewardMenu {
             int tick = 0;
             @Override
             public void run() {
-                // Affiche le slide dans les slots centraux (10 à 16)
-                for (int s = 0; s < slotsCount; s++) { // s = 0 à 6
-                    int slot = 10 + s;                // slots 10,11,...,16
-                    int index = tick + s;             // avance la séquence
-                    // Protège index
+                for (int s = 0; s < slotsCount; s++) {
+                    int slot = 10 + s;
+                    int index = tick + s;
                     BoxRewardManager.RarityReward reward = sequence.get(Math.min(index, sequence.size() - 1));
                     inv.setItem(slot, getWoolReward(reward));
                 }
                 player.openInventory(inv);
-
-                // Fin de l'animation : lot gagnant au centre
                 if (tick >= sequence.size() - slotsCount) {
                     player.sendMessage("§aTu as gagné : " + finalReward.display);
                     rewardAction.run();
@@ -58,6 +66,7 @@ public class BoxRewardMenu {
             }
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("DrakariaProfile"), 1L, 5L);
     }
+
 
     // Génére une laine de couleur selon rareté
     private static ItemStack getWoolReward(BoxRewardManager.RarityReward rarity) {
