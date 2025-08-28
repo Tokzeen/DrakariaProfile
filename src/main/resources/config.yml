@@ -83,3 +83,15 @@ anvil_rewards:
 
 ## PVP ##
 kill_xp: 100
+
+## FARM ##
+crops:
+  WHEAT: 5.0         # = CROPS quand mûr
+  CARROT: 5.0        # = CARROT quand mûr
+  POTATO: 5.0        # = POTATO quand mûr
+  NETHER_WARTS: 6.0  # = NETHER_WARTS stade 3
+  MELON_BLOCK: 8.0   # pastèque générée
+  PUMPKIN: 8.0       # citrouille générée
+  COCOA: 4.0
+  SUGAR_CANE_BLOCK: 3.0
+  CACTUS: 3.0

@@ -9,6 +9,7 @@ import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.quest.QuestCommandExecutor;
 import fr.drakariaprofile.quest.QuestManager;
 import fr.drakariaprofile.storage.SQLiteManager;
+import fr.drakariaprofile.storage.PlacedBlockRepository;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,7 +23,7 @@ public class DrakariaProfile extends JavaPlugin {
     private ProfileManager profileManager;
     private QuestManager questManager;
     private BoxRewardManager boxRewardManager;
-    // Pour le mob system (config)
+
     public static class MobXpConfig {
         public final double xp;
         public final double chance;
@@ -37,7 +38,6 @@ public class DrakariaProfile extends JavaPlugin {
         instance = this;
         SQLiteManager.connect();
 
-
         // Création des fichiers de config de base
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveResource("config.yml", false);
@@ -46,7 +46,7 @@ public class DrakariaProfile extends JavaPlugin {
             saveResource("level.yml", false);
         }
 
-        // --- Génère rewards_gui.yml automatiquement s'il n'existe pas ---
+        // Génère rewards_gui.yml automatiquement s'il n'existe pas
         File rewardsGuiFile = new File(getDataFolder(), "rewards_gui.yml");
         if (!rewardsGuiFile.exists()) {
             try {
@@ -55,16 +55,13 @@ public class DrakariaProfile extends JavaPlugin {
                 YamlConfiguration config = new YamlConfiguration();
                 for (int i = 0; i < 80; i++) {
                     config.set("rewards." + i + ".name", "&bRécompense #" + (i + 1));
-                    config.set("rewards." + i + ".lore",
-                            Collections.singletonList("&7Clique pour récupérer la récompense !"));
+                    config.set("rewards." + i + ".lore", Collections.singletonList("&7Clique pour récupérer la récompense !"));
                 }
                 config.save(rewardsGuiFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-
 
         // Chargement des configs
         ConfigManager.loadConfigs();
@@ -74,8 +71,12 @@ public class DrakariaProfile extends JavaPlugin {
         Map<String, Double> smeltXpMap = loadSmeltXpMap();
         Map<String, Double> shopSellXpMap = loadShopSellXpMap();
         Map<String, MobXpConfig> mobXpMap = loadMobXpMap();
+        Map<String, Double> cropXpMap = loadCropXpMap();
 
         profileManager = new ProfileManager(blockXpMap, smeltXpMap, shopSellXpMap, mobXpMap);
+
+        // Instanciation du repository persistant pour la gestion des blocs posés (melon/citrouille)
+        PlacedBlockRepository placedBlockRepo = new PlacedBlockRepository(SQLiteManager.getConnection());
 
         // Listeners pour profils
         getServer().getPluginManager().registerEvents(new BlockBreakListener(profileManager), this);
@@ -85,12 +86,12 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new KillListener(profileManager), this);
-
+        // CropListener : on passe bien le repo ici !
+        getServer().getPluginManager().registerEvents(new CropListener(profileManager, cropXpMap, placedBlockRepo), this);
 
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
         getServer().getPluginManager().registerEvents(new MineurMenuListener(profileManager, menuManager), this);
         getServer().getPluginManager().registerEvents(new ChasseurMenuListener(profileManager, menuManager), this);
-
 
         // -----------------
         // SYSTÈME DE QUÊTES
@@ -115,10 +116,7 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MainMenuListener(), this);
 
         // Lancer le reset quotidien automatique des quêtes
-
-        questManager = new QuestManager(getDataFolder());
         questManager.scheduleDailyResetProd();
-
 
         // -----------------
         // Menu des récompenses
@@ -131,16 +129,12 @@ public class DrakariaProfile extends JavaPlugin {
 
         // commandes /upgrade
         getCommand("upgrade").setExecutor(new UpgradeCommandExecutor(profileManager));
-
         getCommand("ameliorations").setExecutor(new AmeliorationsCommand(menuManager, profileManager));
-
 
         // Commandes profil
         getCommand("drakariaprofile").setExecutor(new ProfileCommandExecutor(profileManager));
         getCommand("drakariaquest").setExecutor(new QuestAdminCommandExecutor());
-
         getCommand("profile").setExecutor(new ProfilePublicCommandExecutor(profileManager));
-
 
         if (!new File(getDataFolder(), "box_reward.yml").exists()) {
             saveResource("box_reward.yml", false);
@@ -148,13 +142,12 @@ public class DrakariaProfile extends JavaPlugin {
         boxRewardManager = new BoxRewardManager(getDataFolder());
         getCommand("drakariareward").setExecutor(new fr.drakariaprofile.commands.BoxRewardCommand(boxRewardManager));
         getServer().getPluginManager().registerEvents(new fr.drakariaprofile.menu.BoxRewardMenuListener(), this);
-
     }
 
     @Override
     public void onDisable() {
         if (questManager != null) {
-            questManager.saveAllPlayers(); // Sauvegarde toutes les quêtes
+            questManager.saveAllPlayers();
         }
         SQLiteManager.disconnect();
     }
@@ -219,9 +212,18 @@ public class DrakariaProfile extends JavaPlugin {
         return map;
     }
 
-
-
-
+    private Map<String, Double> loadCropXpMap() {
+        Map<String, Double> map = new HashMap<>();
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists()) saveResource("config.yml", false);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        if (config.contains("crops")) {
+            for (String key : config.getConfigurationSection("crops").getKeys(false)) {
+                map.put(key.toUpperCase(), config.getDouble("crops." + key, 0.0));
+            }
+        }
+        return map;
+    }
 
     public ProfileManager getProfileManager() {
         return profileManager;
