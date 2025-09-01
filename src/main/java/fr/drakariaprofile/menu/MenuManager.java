@@ -2,6 +2,7 @@ package fr.drakariaprofile.menu;
 
 import fr.drakariaprofile.profile.ProfileManager;
 import fr.drakariaprofile.profile.Profile;
+import fr.drakariaprofile.storage.UpgradeRepository;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,8 +23,8 @@ public class MenuManager {
     private final int totalRewards = 80;
     private final int totalPages;
     private final YamlConfiguration guiConfig;
+    private final YamlConfiguration config;
 
-    // 28 slots par page (4 lignes de 7 coffres)
     private final int[] rewardSlots = {
             10,11,12,13,14,15,16,
             19,20,21,22,23,24,25,
@@ -34,10 +35,10 @@ public class MenuManager {
     public MenuManager(ProfileManager profileManager, File dataFolder) {
         this.profileManager = profileManager;
         this.guiConfig = YamlConfiguration.loadConfiguration(new File(dataFolder, "rewards_gui.yml"));
+        this.config = YamlConfiguration.loadConfiguration(new File(dataFolder, "config.yml"));
         this.totalPages = (int)Math.ceil(totalRewards / (double)rewardsPerPage);
     }
 
-    // Ajout du getter
     public int getTotalRewards() {
         return totalRewards;
     }
@@ -63,7 +64,6 @@ public class MenuManager {
         int end = Math.min(page * rewardsPerPage, totalRewards);
 
         Inventory inv = Bukkit.createInventory(null, 54, "§6Récompenses (Page " + page + "/" + totalPages + ")");
-        // Fond de vitres rouges
         ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)14);
         ItemMeta glassMeta = glass.getItemMeta();
         glassMeta.setDisplayName("§f");
@@ -83,7 +83,6 @@ public class MenuManager {
         skull.setItemMeta(meta);
         inv.setItem(4, skull);
 
-        // Les rewards
         int rewardsThisPage = end - start + 1;
         for (int i = 0; i < rewardsThisPage; i++) {
             int level = start + i;
@@ -140,8 +139,6 @@ public class MenuManager {
         player.openInventory(inv);
     }
 
-
-    // (Le menu améliorations mineur reste inchangé !)
     public void openMineurUpgradeMenu(Player player, Profile profile) {
         MineurUpgradeMenu.openMineurUpgradeMenu(player, profile);
     }
@@ -150,6 +147,9 @@ public class MenuManager {
         ChasseurUpgradeMenu.openChasseurUpgradeMenu(player, profile);
     }
 
+    public void openFarmeurUpgradeMenu(Player player, Profile profile) {
+        FarmeurUpgradeMenu.openFarmeurUpgradeMenu(player, profile);
+    }
 
 
 }

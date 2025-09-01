@@ -35,11 +35,12 @@ public class AmeliorationsCommand implements CommandExecutor {
                 menuManager.openChasseurUpgradeMenu(player, profile);
                 return true;
             }
+            if (args[0].equalsIgnoreCase("farmeur")) {
+                menuManager.openFarmeurUpgradeMenu(player, profile);
+                return true;
+            }
         }
-        sender.sendMessage("§eUsage : /ameliorations mineur ou /ameliorations chasseur");
+        sender.sendMessage("§eUsage : /ameliorations mineur, /ameliorations chasseur, ou /ameliorations farmeur");
         return true;
     }
-
-
-
 }

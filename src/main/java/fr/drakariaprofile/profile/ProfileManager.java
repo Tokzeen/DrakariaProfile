@@ -26,17 +26,25 @@ public class ProfileManager {
     private final Map<String, Double> blockXpMap;
     private final Map<String, Double> smeltXpMap;
     private final Map<String, Double> shopSellXpMap;
+    private final Map<String, Double> cropXpMap; // Ajouté
     public final Map<String, DrakariaProfile.MobXpConfig> mobXpMap;
     private final int ACTION_BAR_DISPLAY_TICKS = 15; // 0.75s
 
     public ProfileManager(Map<String, Double> blockXpMap,
                           Map<String, Double> smeltXpMap,
                           Map<String, Double> shopSellXpMap,
-                          Map<String, DrakariaProfile.MobXpConfig> mobXpMap) {
+                          Map<String, DrakariaProfile.MobXpConfig> mobXpMap,
+                          Map<String, Double> cropXpMap) { // Ajouté au constructeur
         this.blockXpMap = blockXpMap;
         this.smeltXpMap = smeltXpMap;
         this.shopSellXpMap = shopSellXpMap;
         this.mobXpMap = mobXpMap;
+        this.cropXpMap = cropXpMap; // Ajouté
+    }
+
+    // Getter ajouté pour accès externe au cropXpMap
+    public Map<String, Double> getCropXpMap() {
+        return cropXpMap;
     }
 
     public Profile getProfile(Player player) {
@@ -60,9 +68,8 @@ public class ProfileManager {
         return ConfigManager.getXpForLevel(level);
     }
 
-    // Ajoute à la fois XP et argent (stack pour action bar)
     public void addXpAndMoney(Player player, double xp, double money) {
-        if (xp > 0) addXpNoActionBar(player, xp); // méthode ci-dessous
+        if (xp > 0) addXpNoActionBar(player, xp);
         if (money > 0) VaultHook.deposit(player, money);
 
         double totalXp = xpActionBarBuffer.getOrDefault(player, 0.0) + xp;
@@ -78,11 +85,11 @@ public class ProfileManager {
                     moneyActionBarBuffer.remove(p);
                     refreshXpDisplay(p);
                     xpCounters.remove(p);
-                }, ACTION_BAR_DISPLAY_TICKS * 50));
+                }, ACTION_BAR_DISPLAY_TICKS * 50)
+        );
         counter.startOrReset();
     }
 
-    // Version addXp qui ne modifie que la progression, pas l'action bar directement
     public void addXpNoActionBar(Player player, double amount) {
         Profile profile = getProfile(player);
         int currentLevel = profile.getLevel();
@@ -112,7 +119,6 @@ public class ProfileManager {
         }
     }
 
-    // Compatibilité : ancienne méthode unitaire pour bonus xp (seulement XP)
     public void addXp(Player player, double amount) {
         addXpAndMoney(player, amount, 0.0);
     }
@@ -124,7 +130,6 @@ public class ProfileManager {
         else sendXpAndMoneyActionBar(player, xp, money);
     }
 
-    // Affichage combiné XP + Argent (format propre)
     public void sendXpAndMoneyActionBar(Player player, double xp, double money) {
         if (xp <= 0 && money <= 0) return;
         StringBuilder msg = new StringBuilder();
@@ -189,7 +194,6 @@ public class ProfileManager {
     public DrakariaProfile.MobXpConfig getMobXpConfig(String mob) {
         return mobXpMap.get(mob.toUpperCase());
     }
-
 
     public boolean hasClaimedReward(Player player, int level) {
         return getProfile(player).getClaimedRewards().contains(level);

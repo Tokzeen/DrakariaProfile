@@ -10,6 +10,7 @@ import fr.drakariaprofile.quest.QuestCommandExecutor;
 import fr.drakariaprofile.quest.QuestManager;
 import fr.drakariaprofile.storage.SQLiteManager;
 import fr.drakariaprofile.storage.PlacedBlockRepository;
+import fr.drakariaprofile.storage.UpgradeRepository;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -73,10 +74,12 @@ public class DrakariaProfile extends JavaPlugin {
         Map<String, MobXpConfig> mobXpMap = loadMobXpMap();
         Map<String, Double> cropXpMap = loadCropXpMap();
 
-        profileManager = new ProfileManager(blockXpMap, smeltXpMap, shopSellXpMap, mobXpMap);
+        profileManager = new ProfileManager(blockXpMap, smeltXpMap, shopSellXpMap, mobXpMap, cropXpMap);
+
 
         // Instanciation du repository persistant pour la gestion des blocs posés (melon/citrouille)
         PlacedBlockRepository placedBlockRepo = new PlacedBlockRepository(SQLiteManager.getConnection());
+        UpgradeRepository upgradeRepository = profileManager.getUpgradeRepository();
 
         // Listeners pour profils
         getServer().getPluginManager().registerEvents(new BlockBreakListener(profileManager), this);
@@ -86,19 +89,17 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new KillListener(profileManager), this);
-        // CropListener : on passe bien le repo ici !
-        getServer().getPluginManager().registerEvents(new CropListener(profileManager, cropXpMap, placedBlockRepo), this);
+        // CropListener : passe bien 4 paramètres ici !
+        getServer().getPluginManager().registerEvents(
+                new CropListener(profileManager, upgradeRepository, cropXpMap, placedBlockRepo), this
+        );
 
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
         getServer().getPluginManager().registerEvents(new MineurMenuListener(profileManager, menuManager), this);
         getServer().getPluginManager().registerEvents(new ChasseurMenuListener(profileManager, menuManager), this);
-
-        // -----------------
-        // SYSTÈME DE QUÊTES
-        // -----------------
+        getServer().getPluginManager().registerEvents(new FarmeurMenuListener(profileManager, menuManager), this);
+        // Système de quêtes
         questManager = new QuestManager(getDataFolder());
-
-        // Commandes quêtes journalières
         getCommand("quete_facile").setExecutor(new QuestCommandExecutor(questManager));
         getCommand("quete_moyen").setExecutor(new QuestCommandExecutor(questManager));
         getCommand("quete_difficile").setExecutor(new QuestCommandExecutor(questManager));
@@ -118,9 +119,7 @@ public class DrakariaProfile extends JavaPlugin {
         // Lancer le reset quotidien automatique des quêtes
         questManager.scheduleDailyResetProd();
 
-        // -----------------
         // Menu des récompenses
-        // -----------------
         getCommand("reward").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("rewards").setExecutor(new RewardsCommandExecutor(menuManager));
         getCommand("récompenses").setExecutor(new RewardsCommandExecutor(menuManager));
