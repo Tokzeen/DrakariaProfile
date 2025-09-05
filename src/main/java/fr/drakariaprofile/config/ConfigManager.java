@@ -1,9 +1,12 @@
 package fr.drakariaprofile.config;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import fr.drakariaprofile.DrakariaProfile;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigManager {
     private static YamlConfiguration breackConfig;
@@ -46,7 +49,6 @@ public class ConfigManager {
         return breackConfig.getDouble("crops." + crop, 0.0);
     }
 
-
     public static double getXpForAnvilLevel(int level) {
         if (!breackConfig.contains("anvil_rewards")) return 0.0;
         for (String range : breackConfig.getConfigurationSection("anvil_rewards").getKeys(false)) {
@@ -63,13 +65,11 @@ public class ConfigManager {
         return 0.0;
     }
 
-
     /**
      * XP pour enchantement selon config.yml (section enchant_rewards)
      */
     public static double getXpForEnchantLevel(int enchantLevel) {
         if (!breackConfig.contains("enchant_rewards")) return 0.0;
-
         for (String key : breackConfig.getConfigurationSection("enchant_rewards").getKeys(false)) {
             String[] parts = key.split("-");
             if (parts.length != 2) continue;
@@ -82,5 +82,22 @@ public class ConfigManager {
             } catch (NumberFormatException ignored) {}
         }
         return 0.0;
+    }
+
+    /**
+     * Retourne la map complète des loots/poissons de pêche et leur XP
+     * Section "fishing_loots" de config.yml
+     * Clé = "RAW_FISH-0", "RAW_FISH-1", ..., "ENCHANTED_BOOK" etc.
+     */
+    public static Map<String, Double> getFishingLootXpMap() {
+        Map<String, Double> lootXpMap = new HashMap<>();
+        if (breackConfig == null) return lootXpMap;
+        if (breackConfig.contains("fishing_loots")) {
+            for (String key : breackConfig.getConfigurationSection("fishing_loots").getKeys(false)) {
+                double xp = breackConfig.getDouble("fishing_loots." + key, 0.0);
+                lootXpMap.put(key, xp);
+            }
+        }
+        return lootXpMap;
     }
 }

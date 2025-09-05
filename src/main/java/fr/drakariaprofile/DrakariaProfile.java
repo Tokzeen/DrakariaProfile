@@ -13,6 +13,7 @@ import fr.drakariaprofile.storage.PlacedBlockRepository;
 import fr.drakariaprofile.storage.UpgradeRepository;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Material;
 
 import java.io.File;
 import java.util.Collections;
@@ -73,6 +74,7 @@ public class DrakariaProfile extends JavaPlugin {
         Map<String, Double> shopSellXpMap = loadShopSellXpMap();
         Map<String, MobXpConfig> mobXpMap = loadMobXpMap();
         Map<String, Double> cropXpMap = loadCropXpMap();
+        Map<String, Double> fishingLootXpMap = ConfigManager.getFishingLootXpMap();
 
         profileManager = new ProfileManager(blockXpMap, smeltXpMap, shopSellXpMap, mobXpMap, cropXpMap);
 
@@ -89,10 +91,10 @@ public class DrakariaProfile extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EnchantListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(profileManager, this), this);
         getServer().getPluginManager().registerEvents(new KillListener(profileManager), this);
+        getServer().getPluginManager().registerEvents(new FishXpListener(profileManager, fishingLootXpMap), this);
+
         // CropListener : passe bien 4 paramètres ici !
-        getServer().getPluginManager().registerEvents(
-                new CropListener(profileManager, upgradeRepository, cropXpMap, placedBlockRepo), this
-        );
+        getServer().getPluginManager().registerEvents(new CropListener(profileManager, upgradeRepository, cropXpMap, placedBlockRepo), this);
 
         MenuManager menuManager = new MenuManager(profileManager, getDataFolder());
         getServer().getPluginManager().registerEvents(new MineurMenuListener(profileManager, menuManager), this);

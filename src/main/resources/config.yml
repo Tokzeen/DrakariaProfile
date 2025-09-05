@@ -95,3 +95,26 @@ crops:
   COCOA: 4.0
   SUGAR_CANE_BLOCK: 3.0
   CACTUS: 3.0
+
+fishing_loots:
+  RAW_FISH-0: 5.0   # Cod/Morue
+  RAW_FISH-1: 8.0   # Saumon
+  RAW_FISH-2: 15.0  # Poisson-globe
+  RAW_FISH-3: 12.0  # Poisson tropical
+  ENCHANTED_BOOK: 15.0
+  NAME_TAG: 12.0
+  SADDLE: 8.0
+  BOW: 7.0
+  FISHING_ROD: 6.0
+  LEATHER: 2.0
+  LEATHER_BOOTS: 2.5
+  STICK: 1.0
+  STRING: 2.0
+  BOWL: 1.0
+  GLASS_BOTTLE: 1.5
+  BONE: 2.5
+  INK_SACK: 2.5
+  TRIPWIRE_HOOK: 2.0
+  ROTTEN_FLESH: 1.0
+  POTION: 2.5
+  LILY_PAD: 3.0
